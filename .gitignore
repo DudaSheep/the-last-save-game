@@ -4,6 +4,7 @@ Obj/
 Logs/
 
 .vs/
+.vscode/
 UserSettings/
 
 UpgradeLog.htm
