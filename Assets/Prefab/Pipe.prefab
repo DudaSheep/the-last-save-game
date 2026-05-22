@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2408851319425323071}
   - component: {fileID: 4167787545436032237}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pipe_bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1090907515755756085}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.01999998, y: -2.9346054, z: 0}
+  m_LocalPosition: {x: 2, y: -2, z: 0}
   m_LocalScale: {x: 1.7270068, y: 1.3676, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: d43a55d570a6513488962efecb8411fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4843068068228822989}
   - component: {fileID: 7065053620573896330}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pipe_bottom (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 1242099526864183687}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.45, y: 6.29, z: -0.047567327}
+  m_LocalPosition: {x: 2, y: 6, z: 0}
   m_LocalScale: {x: 1.7270068, y: 1.3676, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -156,7 +156,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: d43a55d570a6513488962efecb8411fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2618440574926816727}
   - component: {fileID: 1395117432994753532}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pipe_top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ Transform:
   m_GameObject: {fileID: 2237227589505352533}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.45, y: 3.62, z: -0.047567327}
+  m_LocalPosition: {x: 2, y: 3.4, z: 0}
   m_LocalScale: {x: 1.7270068, y: 1.3676, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -240,7 +240,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: d43a55d570a6513488962efecb8411fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3946013990408997868}
   - component: {fileID: 4624888685541582858}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PipeTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,7 +318,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 2.5650666, y: 4.958242}
+  m_Offset: {x: 2.1288671, y: 4.710411}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -329,7 +329,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.97569513, y: 4.923671}
+  m_Size: {x: 1.1246414, y: 5.0576057}
   m_EdgeRadius: 0
 --- !u!1 &3981557418286788895
 GameObject:
@@ -341,7 +341,7 @@ GameObject:
   m_Component:
   - component: {fileID: 959016191448393156}
   - component: {fileID: 2051001320599454349}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pipe_top (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ Transform:
   m_GameObject: {fileID: 3981557418286788895}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.018, y: -5.59, z: 0}
+  m_LocalPosition: {x: 2, y: -4.6, z: 0}
   m_LocalScale: {x: 1.7270068, y: 1.3676, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -403,7 +403,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: d43a55d570a6513488962efecb8411fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -425,7 +425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8964754142104133653}
   - component: {fileID: 9042738559563045343}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PipeBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -441,7 +441,7 @@ Transform:
   m_GameObject: {fileID: 4293221348941867041}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.47, y: 0.6853946, z: -0.047567327}
+  m_LocalPosition: {x: 0, y: -1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -481,7 +481,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.15172249, y: -4.2484884}
+  m_Offset: {x: 2.1148374, y: -3.290869}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -492,7 +492,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.023445, y: 4.957312}
+  m_Size: {x: 1.1144279, y: 5.050677}
   m_EdgeRadius: 0
 --- !u!1 &7400002681178786496
 GameObject:
@@ -504,7 +504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3251724251561878868}
   - component: {fileID: 4782429007865954896}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -520,7 +520,7 @@ Transform:
   m_GameObject: {fileID: 7400002681178786496}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0.07921071, z: 0.047567327}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
