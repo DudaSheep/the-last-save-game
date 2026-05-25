@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3430800930014305707}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8098792738999005951}
   - component: {fileID: 3105605482272586562}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4259006484369358784}
   - component: {fileID: 1484601872178923397}
   - component: {fileID: 5488051531112812040}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DonaMorte
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -137,11 +137,14 @@ MonoBehaviour:
   doubleJump: 0
   estaNoGelo: 0
   deslizamentoGelo: 2
-  attackPoint: {fileID: 0}
+  attackPoint: {fileID: 3430800930014305707}
   attackRange: 0.5
   attackableLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  dashForce: 15
+  dashDuration: 0.2
+  dashCooldown: 1
 --- !u!212 &6895039598482705423
 SpriteRenderer:
   m_ObjectHideFlags: 0

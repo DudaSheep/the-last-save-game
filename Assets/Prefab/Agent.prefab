@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4266323205809126015}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: firepoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 6951246169864766283}
   - component: {fileID: 30880096445907405}
   - component: {fileID: 7290303716058633391}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Agent
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -81,11 +81,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+  shootingDistance: 6
   bulletPrefab: {fileID: 5533939830580979434, guid: d13a5ce0c101242c4863e41ecd5db6b5, type: 3}
   firePoint: {fileID: 4266323205809126015}
   fireRate: 0.8
   maxShots: 3
-  reloadTime: 2
+  reloadTime: 3.5
 --- !u!212 &5162609649425642339
 SpriteRenderer:
   m_ObjectHideFlags: 0

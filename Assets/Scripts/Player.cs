@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -20,22 +21,40 @@ public class Player : MonoBehaviour
     [Tooltip("Selecione a Layer que você criou para a torre (ex: Interactable)")]
     public LayerMask attackableLayers;
 
+    [Header("Configurações do Dash (Botão J)")]
+    [Tooltip("A distância/força do avanço rápido")]
+    public float dashForce = 15f;
+    [Tooltip("Quanto tempo ela passa sumida/invulnerável (Ex: 0.2 segundos)")]
+    public float dashDuration = 0.2f;
+    [Tooltip("Tempo de espera para poder usar o dash novamente")]
+    public float dashCooldown = 1f;
+    private bool canDash = true;
+    private bool isDashing = false;
+
     private Rigidbody2D rig;
     private Animator anim;
+    private SpriteRenderer spriteRenderer; 
+    private Collider2D playerCollider;    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); 
+        playerCollider = GetComponent<Collider2D>();     
     }
 
     // Update is called once per frame
     void Update()
     {
+        //se tiver executando o dash, trava as ações normais
+        if (isDashing) return;
+
         Move();
         Jump();
         CheckAttack();
+        CheckDash(); 
     }
 
     void Move()
@@ -45,12 +64,10 @@ public class Player : MonoBehaviour
         // --- SISTEMA DE MOVIMENTO COM INÉRCIA (GELO VS NORMAL) ---
         if (estaNoGelo)
         {
-            // Se o jogador está apertando para mover, ganha velocidade aos poucos
             if (inputHorizontal != 0)
             {
                 velocidadeHorizontalAtual = Mathf.MoveTowards(velocidadeHorizontalAtual, inputHorizontal, Time.deltaTime * deslizamentoGelo * 2f);
             }
-            // Se soltar o botão, perde velocidade bem devagar (o efeito de deslizar!)
             else
             {
                 velocidadeHorizontalAtual = Mathf.MoveTowards(velocidadeHorizontalAtual, 0f, Time.deltaTime * deslizamentoGelo);
@@ -58,11 +75,9 @@ public class Player : MonoBehaviour
         }
         else
         {
-            // Nas outras fases, o controle continua direto, travado e instantâneo como era antes
             velocidadeHorizontalAtual = inputHorizontal;
         }
 
-        // Aplica o movimento final usando a velocidade horizontal calculada
         Vector3 movement = new Vector3(velocidadeHorizontalAtual, 0f, 0f);
         transform.position += movement * Time.deltaTime * Speed;
 
@@ -107,12 +122,9 @@ public class Player : MonoBehaviour
                     anim.SetTrigger("jump");
                 }
             }
-
         }
     }
 
-
-    // --- VERIFICA SE O JOGADOR APERTOU A TECLA K ---
     void CheckAttack()
     {
         if (Input.GetKeyDown(KeyCode.K))
@@ -123,7 +135,6 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        // Dispara o gatilho da animação de ataque no Animator
         if (anim != null)
         {
             anim.SetTrigger("attack");
@@ -131,10 +142,8 @@ public class Player : MonoBehaviour
 
         if (attackPoint == null) return;
 
-        // Cria a esfera de colisão invisível para detectar se a torre está no alcance
         Collider2D[] hitObjects = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, attackableLayers);
 
-        // Varre os objetos atingidos procurando o script da torre
         foreach (Collider2D obj in hitObjects)
         {
             ConnectionTowerScript tower = obj.GetComponent<ConnectionTowerScript>();
@@ -142,9 +151,67 @@ public class Player : MonoBehaviour
             {
                 tower.TakeDamage();
             }
+
+            FBIAgent fbiAgent = obj.GetComponent<FBIAgent>();
+            if (fbiAgent != null)
+            {
+                fbiAgent.TakeDamage(); 
+            }
         }
     }
 
+    // --- VERIFICA SE O JOGADOR APERTOU A TECLA J ---
+    void CheckDash()
+    {
+        if (Input.GetKeyDown(KeyCode.J) && canDash)
+        {
+            StartCoroutine(DashRoutine());
+        }
+    }
+
+    // --- DASH FANTASMÁTICO ---
+    IEnumerator DashRoutine()
+    {
+        canDash = false;
+        isDashing = true;
+
+        // Salva a gravidade original e congela o movimento vertical
+        float originalGravity = rig.gravityScale;
+        rig.gravityScale = 0f;
+
+        // Descobre a direção baseada na rotação atual
+        float direcaoDash = (transform.eulerAngles.y == 180f) ? -1f : 1f;
+        
+        // Aplica velocidade do dash
+        rig.velocity = new Vector2(direcaoDash * dashForce, 0f);
+
+        // ATIVA INVISIBILIDADE VISUAL
+        if (spriteRenderer != null) spriteRenderer.enabled = false; 
+
+        // NOVO: Diz para a física ignorar colisões entre a Layer do Player e a Layer do Inimigo
+        // (Substitua "Player" e "Inimigo" pelos nomes exatos das camadas que você criou)
+        int layerPlayer = LayerMask.NameToLayer("Player");
+        int layerInimigo = LayerMask.NameToLayer("Interactable");
+        Physics2D.IgnoreLayerCollision(layerPlayer, layerInimigo, true);
+
+        // Espera o tempo de duração do dash
+        yield return new WaitForSeconds(dashDuration);
+
+        // DESLIGA O DASH E RETORNA AO NORMAL
+        rig.velocity = Vector2.zero;
+        rig.gravityScale = originalGravity; 
+        
+        if (spriteRenderer != null) spriteRenderer.enabled = true;  // Reaparece o visual
+
+        // NOVO: Reativa as colisões normais com os inimigos após o fim do dash
+        Physics2D.IgnoreLayerCollision(layerPlayer, layerInimigo, false);
+
+        isDashing = false;
+
+        // Tempo de espera do Cooldown
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -162,5 +229,4 @@ public class Player : MonoBehaviour
             isJumping = true;
         }
     }
-
 }

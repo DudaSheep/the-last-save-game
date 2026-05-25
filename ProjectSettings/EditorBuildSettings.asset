@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Stage1_et.unity
+    guid: 3f720d84919a445c4bc2db3132f56c15
+  - enabled: 1
     path: Assets/Scenes/Stage2_flappy_bird.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Stage3_clubPinguin.unity
+    guid: 8a4836d45619ec24db4f313bcf4f4786
   m_configObjects: {}

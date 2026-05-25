@@ -61,4 +61,10 @@ public class PipeSpawner : MonoBehaviour
         float highestPoint = transform.position.y + heightOffset;
         Instantiate(pipePrefab, new Vector3(transform.position.x, Random.Range(lowestPoint, highestPoint), 0), transform.rotation);
     }
+
+    public void ResetaCronometroAtaque()
+    {
+        cronometroFase = 0f;
+        flappyFoiAtivado = false;
+    }
 }
