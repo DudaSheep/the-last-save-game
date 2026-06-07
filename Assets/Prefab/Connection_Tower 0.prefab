@@ -61,8 +61,8 @@ Transform:
   m_GameObject: {fileID: 2009652720273390722}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4878, y: 3.74705, z: 1}
+  m_LocalPosition: {x: 0, y: -0.52, z: 0}
+  m_LocalScale: {x: 0.4878, y: 0.60099804, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 703193905963207061}
@@ -108,9 +108,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 15
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0.7686275, b: 1, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: 21300000, guid: 6d7b3c81ed7c09a4f98b6a9f6f8c6e50, type: 3}
+  m_Color: {r: 0.014017418, g: 0.990566, b: 0.036845904, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -132,12 +132,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 3
-  nextTowerPrefab: {fileID: 0}
   minAttackInterval: 3
   maxAttackInterval: 7
   shockDuration: 1.5
   bossTransform: {fileID: 0}
-  shockVisualPrefab: {fileID: 9072700448997272454, guid: 8588d832054edf840bf79bd7b15dc3d6, type: 3}
+  shockVisualChild: {fileID: 0}
 --- !u!61 &586882095164050510
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -170,18 +169,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.47583425, y: -0.3366959}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3.72, y: 6.84}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.9516683, y: 5.7137523}
   m_EdgeRadius: 0
 --- !u!120 &7965979835519903529
 LineRenderer:

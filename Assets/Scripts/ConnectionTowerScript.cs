@@ -7,14 +7,10 @@ public class ConnectionTowerScript : MonoBehaviour
     [Header("Configurações de Vida")]
     public int currentHealth = 3;
 
-    [Header("Mecânica das Ondas (Spawn)")]
-    [Tooltip("Arraste aqui o Prefab da PRÓXIMA torre que deve nascer quando esta cair. Deixe vazio na última torre!")]
-    public GameObject nextTowerPrefab;
-
     [Header("Random Electricity Attack")]
-    [Tooltip("Minimum time (in seconds) to wait before charging the next shock")]
+    [Tooltip("Tempo mínimo (em segundos) para esperar antes de carregar o próximo choque")]
     public float minAttackInterval = 3f;
-    [Tooltip("Maximum time (in seconds) to wait before charging the next shock")]
+    [Tooltip("Tempo máximo (em segundos) para esperar antes de carregar o próximo choque")]
     public float maxAttackInterval = 7f;
 
     [Tooltip("Duração do raio ativo no chão")]
@@ -27,9 +23,9 @@ public class ConnectionTowerScript : MonoBehaviour
     public Transform bossTransform;
     private LineRenderer shieldLaser;
 
-    [Header("Referências de Prefabs (Opcional por enquanto)")]
-    [Tooltip("Se tiver um prefab de efeito visual do raio ou Sprite do raio, coloque aqui")]
-    public GameObject shockVisualPrefab;
+    [Header("Referência do Objeto Filho")]
+    [Tooltip("Arraste aqui o objeto do Raio que está DENTRO/FILHO desta torre na Hierarquia")]
+    public GameObject shockVisualChild;
 
     void Start()
     {
@@ -50,11 +46,18 @@ public class ConnectionTowerScript : MonoBehaviour
             shieldLaser.enabled = true; // Garante que o laser começa ativo
         }
 
+        // Garante que o raio começa desativado ao iniciar o jogo
+        if (shockVisualChild != null)
+        {
+            shockVisualChild.SetActive(false);
+        }
+
         SortNextAttackInterval();
     }
 
     void Update()
     {
+        // Se o laser estiver ativo, ele segue a posição da torre atual até o chefe
         if (shieldLaser != null && bossTransform != null && shieldLaser.enabled)
         {
             shieldLaser.SetPosition(0, transform.position);
@@ -75,7 +78,7 @@ public class ConnectionTowerScript : MonoBehaviour
     private void SortNextAttackInterval()
     {
         currentRandomInterval = Random.Range(minAttackInterval, maxAttackInterval);
-        Debug.Log("Next shock wave will trigger in " + currentRandomInterval.ToString("F2") + " seconds.");
+        Debug.Log(gameObject.name + " vai atacar em " + currentRandomInterval.ToString("F2") + " segundos.");
     }
 
     private IEnumerator ShockAttackRoutine()
@@ -88,42 +91,31 @@ public class ConnectionTowerScript : MonoBehaviour
         if (sprite != null)
         {
             originalColor = sprite.color;
-            sprite.color = Color.red; // Pisca vermelho indicando perigo
+            sprite.color = Color.red; // Pisca vermelho indicando perigo na torre atual
         }
 
-        Debug.Log("Tower charging electricity... WATCH OUT!");
+        Debug.Log(gameObject.name + " carregando eletricidade... CUIDADO!");
         yield return new WaitForSeconds(1.0f);
 
         if (sprite != null)
         {
-            sprite.color = originalColor; // Volta à cor normal da onda
+            sprite.color = originalColor; // Volta à cor normal
         }
 
-        // VARIÁVEL PARA GUARDAR O CLONE CRIADO
-        GameObject spawnedShock = null;
-
-        if (shockVisualPrefab != null)
+        // ATIVAÇÃO DO FILHO: Liga o raio que já está posicionado embaixo dela
+        if (shockVisualChild != null)
         {
-            float spawnX = -0.61f;
-            float spawnY = 0.3f;
-
-            Vector3 spawnPosition = new Vector3(spawnX, spawnY, transform.position.z);
-
-            // Instancia o prefab do choque na posição calibrada no chão
-            spawnedShock = Instantiate(shockVisualPrefab, spawnPosition, Quaternion.identity);
-
-            spawnedShock.SetActive(true);
+            shockVisualChild.SetActive(true);
+            Debug.Log("RAIO ATIVADO ABAIXO DE: " + gameObject.name);
         }
-
-        Debug.Log("ELECTRICITY DISCHARGED ON THE GROUND!");
 
         // Espera o tempo do raio ativo machucando o jogador
         yield return new WaitForSeconds(shockDuration);
 
-        if (spawnedShock != null)
+        // DESATIVAÇÃO DO FILHO: Desliga o raio para a próxima rodada
+        if (shockVisualChild != null)
         {
-            // CORREÇÃO: Destrói o clone criado para não entupir a memória do jogo
-            Destroy(spawnedShock);
+            shockVisualChild.SetActive(false);
         }
 
         SortNextAttackInterval();
@@ -135,7 +127,7 @@ public class ConnectionTowerScript : MonoBehaviour
         if (currentHealth <= 0) return;
 
         currentHealth--;
-        Debug.Log("Tower took damage! Remaining health: " + currentHealth);
+        Debug.Log(gameObject.name + " tomou dano! Vida restante: " + currentHealth);
 
         StartCoroutine(FlashDamageRoutine());
 
@@ -159,45 +151,21 @@ public class ConnectionTowerScript : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Connection Tower destroyed!");
+        Debug.Log(gameObject.name + " destruída com sucesso!");
 
         if (shieldLaser != null) shieldLaser.enabled = false;
 
+        // Avisa o boss que UMA torre caiu (ele pode ir perdendo o escudo gradativamente se você quiser)
         PinguinAttackScript boss = FindObjectOfType<PinguinAttackScript>();
         if (boss != null)
         {
             boss.ReportTowerDestroyed();
         }
 
-        if (nextTowerPrefab != null)
-        {
-            // 1. Instancia a nova torre
-            GameObject newTower = Instantiate(nextTowerPrefab, transform.position, transform.rotation);
+        // Garante que o raio não fique ligado flutuando se a torre quebrar no meio do ataque
+        if (shockVisualChild != null) shockVisualChild.SetActive(false);
 
-            // 2. FORÇA A ORDEM VISUAL (Garante que ela não vá para trás do cenário)
-            SpriteRenderer currentSprite = GetComponent<SpriteRenderer>();
-            SpriteRenderer nextSprite = newTower.GetComponent<SpriteRenderer>();
-            if (currentSprite != null && nextSprite != null)
-            {
-                nextSprite.sortingLayerName = currentSprite.sortingLayerName;
-                nextSprite.sortingOrder = currentSprite.sortingOrder;
-            }
-
-            // 3. Mantém a ordem visual do Laser Renderer se houver
-            LineRenderer nextLaser = newTower.GetComponent<LineRenderer>();
-            if (shieldLaser != null && nextLaser != null)
-            {
-                nextLaser.sortingLayerName = shieldLaser.sortingLayerName;
-                nextLaser.sortingOrder = shieldLaser.sortingOrder;
-            }
-
-            ConnectionTowerScript nextScript = newTower.GetComponent<ConnectionTowerScript>();
-            if (nextScript != null && bossTransform != null)
-            {
-                nextScript.bossTransform = bossTransform;
-            }
-        }
-
+        // Apenas se destrói, sem spawnar nada no lugar!
         Destroy(gameObject);
     }
 }
