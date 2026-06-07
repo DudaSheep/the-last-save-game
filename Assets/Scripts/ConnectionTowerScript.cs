@@ -8,15 +8,14 @@ public class ConnectionTowerScript : MonoBehaviour
     public int currentHealth = 3;
 
     [Header("Random Electricity Attack")]
-    [Tooltip("Minimum time (in seconds) to wait before charging the next shock")]
+    [Tooltip("Tempo mínimo (em segundos) para esperar antes de carregar o próximo choque")]
     public float minAttackInterval = 3f;
-    [Tooltip("Maximum time (in seconds) to wait before charging the next shock")]
+    [Tooltip("Tempo máximo (em segundos) para esperar antes de carregar o próximo choque")]
     public float maxAttackInterval = 7f;
-
 
     [Tooltip("Duração do raio ativo no chão")]
     public float shockDuration = 1.5f;
-    private float currentRandomInterval; // Holds the current sorted wait time
+    private float currentRandomInterval;
     private float attackTimer = 0f;
     private bool isAttacking = false;
 
@@ -24,35 +23,47 @@ public class ConnectionTowerScript : MonoBehaviour
     public Transform bossTransform;
     private LineRenderer shieldLaser;
 
-    [Header("Referências de Prefabs (Opcional por enquanto)")]
-    [Tooltip("Se tiver um prefab de efeito visual do raio ou Sprite do raio, coloque aqui")]
-    public GameObject shockVisualPrefab;
+    [Header("Referência do Objeto Filho")]
+    [Tooltip("Arraste aqui o objeto do Raio que está DENTRO/FILHO desta torre na Hierarquia")]
+    public GameObject shockVisualChild;
 
     void Start()
     {
-        // Gets or configures the Line Renderer attached to the tower
         shieldLaser = GetComponent<LineRenderer>();
+
+        // Tenta achar o Transform do Boss automaticamente se não tiver sido arrastado no Inspector
+        if (bossTransform == null)
+        {
+            PinguinAttackScript boss = FindObjectOfType<PinguinAttackScript>();
+            if (boss != null) bossTransform = boss.transform;
+        }
+
         if (shieldLaser != null && bossTransform != null)
         {
             shieldLaser.positionCount = 2;
             shieldLaser.startWidth = 0.1f;
             shieldLaser.endWidth = 0.1f;
+            shieldLaser.enabled = true; // Garante que o laser começa ativo
         }
 
-        // Sorts the first attack interval right at the start of the game
+        // Garante que o raio começa desativado ao iniciar o jogo
+        if (shockVisualChild != null)
+        {
+            shockVisualChild.SetActive(false);
+        }
+
         SortNextAttackInterval();
     }
 
     void Update()
     {
-        // 1. Updates the laser position in real-time
-        if (shieldLaser != null && bossTransform != null)
+        // Se o laser estiver ativo, ele segue a posição da torre atual até o chefe
+        if (shieldLaser != null && bossTransform != null && shieldLaser.enabled)
         {
             shieldLaser.SetPosition(0, transform.position);
             shieldLaser.SetPosition(1, bossTransform.position);
         }
 
-        // 2. Timer control with random intervals
         if (!isAttacking)
         {
             attackTimer += Time.deltaTime;
@@ -64,67 +75,60 @@ public class ConnectionTowerScript : MonoBehaviour
         }
     }
 
-
-    // Helper function to pick a random time for the next attack cycle
     private void SortNextAttackInterval()
     {
         currentRandomInterval = Random.Range(minAttackInterval, maxAttackInterval);
-        Debug.Log("Next shock wave will trigger in " + currentRandomInterval.ToString("F2") + " seconds.");
+        Debug.Log(gameObject.name + " vai atacar em " + currentRandomInterval.ToString("F2") + " segundos.");
     }
 
-    // Coroutine that manages the warning sign and the ground shock attack
     private IEnumerator ShockAttackRoutine()
     {
         isAttacking = true;
 
-        //  WARNING SIGN
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        Color originalColor = Color.white; // Cor padrao da torre
+        Color originalColor = Color.white;
 
         if (sprite != null)
         {
             originalColor = sprite.color;
-            // Faz a torre piscar em vermelho rapido indicando perigo eminente
-            sprite.color = Color.red;
+            sprite.color = Color.red; // Pisca vermelho indicando perigo na torre atual
         }
 
-        Debug.Log("Tower charging electricity... WATCH OUT!");
-        yield return new WaitForSeconds(1.0f); // 1 segundo para o jogador ver a torre vermelha e reagir
+        Debug.Log(gameObject.name + " carregando eletricidade... CUIDADO!");
+        yield return new WaitForSeconds(1.0f);
 
-        // Volta a torre para a cor original logo antes de soltar o raio
         if (sprite != null)
         {
-            sprite.color = originalColor;
+            sprite.color = originalColor; // Volta à cor normal
         }
 
+        // ATIVAÇÃO DO FILHO: Liga o raio que já está posicionado embaixo dela
+        if (shockVisualChild != null)
+        {
+            shockVisualChild.SetActive(true);
+            Debug.Log("RAIO ATIVADO ABAIXO DE: " + gameObject.name);
+        }
 
-        // DISCHARGE ATTACK 
-        // Activates the shock wave visual/damage
-        if (shockVisualPrefab != null) shockVisualPrefab.SetActive(true);
-        Debug.Log("ELECTRICITY DISCHARGED ON THE GROUND!");
-
-        // Keeps the shock active hurting the player
+        // Espera o tempo do raio ativo machucando o jogador
         yield return new WaitForSeconds(shockDuration);
 
-
-        // COOLDOWN 
-        // Turns off the attack and prepares for the next cycle
-        if (shockVisualPrefab != null) shockVisualPrefab.SetActive(false);
+        // DESATIVAÇÃO DO FILHO: Desliga o raio para a próxima rodada
+        if (shockVisualChild != null)
+        {
+            shockVisualChild.SetActive(false);
+        }
 
         SortNextAttackInterval();
-
         isAttacking = false;
     }
 
-    // THIS FUNCTION WILL BE CALLED BY THE PLAYER ATTACK SCRIPT (When pressing K)
     public void TakeDamage()
     {
         if (currentHealth <= 0) return;
 
         currentHealth--;
-        Debug.Log("Tower took damage! Remaining health: " + currentHealth);
+        Debug.Log(gameObject.name + " tomou dano! Vida restante: " + currentHealth);
 
-        // Hit feedback (Red flash effect on the sprite)
         StartCoroutine(FlashDamageRoutine());
 
         if (currentHealth <= 0)
@@ -147,12 +151,21 @@ public class ConnectionTowerScript : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Connection Tower destroyed!");
+        Debug.Log(gameObject.name + " destruída com sucesso!");
 
-        // Disables the laser immediately to show the shield dropped
         if (shieldLaser != null) shieldLaser.enabled = false;
 
-        // Disables the tower object
-        gameObject.SetActive(false);
+        // Avisa o boss que UMA torre caiu (ele pode ir perdendo o escudo gradativamente se você quiser)
+        PinguinAttackScript boss = FindObjectOfType<PinguinAttackScript>();
+        if (boss != null)
+        {
+            boss.ReportTowerDestroyed();
+        }
+
+        // Garante que o raio não fique ligado flutuando se a torre quebrar no meio do ataque
+        if (shockVisualChild != null) shockVisualChild.SetActive(false);
+
+        // Apenas se destrói, sem spawnar nada no lugar!
+        Destroy(gameObject);
     }
 }

@@ -19,7 +19,7 @@ public class GroundShock : MonoBehaviour
             // Se encontrou o script de vida, aplica 1 de dano
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(1);
+                playerHealth.TakeDamage(2);
             }
 
         }
