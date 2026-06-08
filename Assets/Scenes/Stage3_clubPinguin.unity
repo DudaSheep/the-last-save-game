@@ -10375,6 +10375,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: b56976a86bf61494d8b140f764e8ce8a, type: 3}
     - target: {fileID: 4094646109930382333, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
       propertyPath: m_Name
       value: GameController
@@ -10849,8 +10853,8 @@ MonoBehaviour:
   m_DeadZoneHeight: 0.2
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
-  m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneWidth: 1
+  m_SoftZoneHeight: 1
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1

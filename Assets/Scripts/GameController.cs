@@ -33,13 +33,26 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        //singleton simples
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
         UpdateScoreText();
         UpdateLivesText();
+
+        if (bgMusic != null && !bgMusic.isPlaying)
+        {
+            bgMusic.Play();
+        }
     }
 
     void Update()
@@ -87,9 +100,12 @@ public class GameController : MonoBehaviour
             lives = 0;
             UpdateLivesText();
 
-            // Cancela qualquer reinício de fase agendado por engano
-            CancelInvoke("RestartLevel");
+            if (bgMusic != null)
+            {
+                bgMusic.Stop();
+            }
 
+            CancelInvoke("RestartLevel");
             Time.timeScale = 1f;
             SceneManager.LoadScene("GameOver");
         }
@@ -105,12 +121,16 @@ public class GameController : MonoBehaviour
         UpdateLivesText();
     }
 
-
     public void Pause()
     {
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
+
+        if (bgMusic != null)
+        {
+            bgMusic.Pause();
+        }
     }
 
     public void Resume()
@@ -118,18 +138,25 @@ public class GameController : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
+
+        if (bgMusic != null)
+        {
+            bgMusic.UnPause();
+        }
     }
 
     public void ShowGameOver()
     {
         gameOver.SetActive(true);
         Time.timeScale = 0f;
+        if (bgMusic != null) bgMusic.Stop();
     }
 
     public void ShowVictoryScreen()
     {
         victoryScreen.SetActive(true);
         Time.timeScale = 0f;
+        if (bgMusic != null) bgMusic.Stop(); 
     }
 
     public void RestartLevel()
