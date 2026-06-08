@@ -46,8 +46,11 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        UpdateScoreText();
-        UpdateLivesText();
+        if (SceneManager.GetActiveScene().name != "Cutscene_Intro")
+        {
+            UpdateScoreText();
+            UpdateLivesText();
+        }
 
         if (bgMusic != null && !bgMusic.isPlaying)
         {
@@ -123,7 +126,11 @@ public class GameController : MonoBehaviour
 
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        if (pauseMenu != null) 
+        {
+            pauseMenu.SetActive(true);
+        }
+
         Time.timeScale = 0f;
         isPaused = true;
 
@@ -135,7 +142,11 @@ public class GameController : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
+        if (pauseMenu != null) 
+        {
+            pauseMenu.SetActive(false);
+        }
+
         Time.timeScale = 1f;
         isPaused = false;
 
