@@ -666,7 +666,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.8416064, y: -0.49886823, z: -10}
+  m_LocalPosition: {x: 2.84703, y: -0.49886823, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6142,7 +6142,7 @@ Transform:
   m_GameObject: {fileID: 1530886761}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.8416064, y: -0.49886823, z: -10}
+  m_LocalPosition: {x: 2.84703, y: -0.49886823, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6653,10 +6653,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: m_Volume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 265841e458be445fb9182286ec350473, type: 3}
     - target: {fileID: 4094646109930382333, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 5328131070692629042, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: bgMusic
+      value: 
+      objectReference: {fileID: 2209107292651287605}
     - target: {fileID: 5328131070692629042, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
       propertyPath: pauseMenu
       value: 
@@ -6666,6 +6682,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+--- !u!82 &2209107292651287605 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+  m_PrefabInstance: {fileID: 2209107292651287604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2279522441433941097
 PrefabInstance:
   m_ObjectHideFlags: 0

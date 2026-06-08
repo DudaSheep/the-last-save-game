@@ -7314,6 +7314,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3135561027379015379, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 265841e458be445fb9182286ec350473, type: 3}
     - target: {fileID: 4094646109930382333, guid: 97390bd0642b14cc599cc55099ad4a99, type: 3}
       propertyPath: m_Name
       value: GameController
