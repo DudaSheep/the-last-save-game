@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class BossHealth : MonoBehaviour
 {
@@ -51,6 +52,11 @@ public class BossHealth : MonoBehaviour
         isDead = true;
         Debug.Log($"{gameObject.name} foi completamente derrotado!");
 
+        if (GameController.instance != null && GameController.instance.enemyDeathSound != null)
+        {
+            GameController.instance.PlayEffect(GameController.instance.enemyDeathSound);
+        }
+
         // Ativa o gatilho de morte no Animator
         // if (anim != null) anim.SetTrigger("MorteTrigger");
 
@@ -62,6 +68,25 @@ public class BossHealth : MonoBehaviour
             }
         }
 
-        Destroy(gameObject, 2f);
+        Invoke("CarregarProximaFase", 1.5f);
+
+        // Remove o Boss da cena
+        Destroy(gameObject, 1.5f);
+    }
+
+    void CarregarProximaFase()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        // Verifica se a próxima fase realmente existe na lista do Build Settings
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.LogWarning("Não há mais fases depois desta no Build Settings! Voltando ao menu principal...");
+            SceneManager.LoadScene("MainMenu"); 
+        }
     }
 }

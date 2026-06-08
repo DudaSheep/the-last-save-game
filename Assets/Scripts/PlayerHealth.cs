@@ -18,6 +18,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Pega o sprite da DonaMorte
+
+        if (GameController.instance != null)
+        {
+            GameController.instance.AtualizarCoracoesUI(currentHealth);
+        }
     }
 
     public void TakeDamage(int damage)
@@ -27,6 +32,16 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
         Debug.Log("❤️ Dona Morte levou dano! Corações restantes: " + currentHealth);
+
+        if (GameController.instance != null)
+        {
+            GameController.instance.AtualizarCoracoesUI(currentHealth);
+        }
+
+        if (GameController.instance != null && GameController.instance.playerHitSound != null)
+        {
+            GameController.instance.PlayEffect(GameController.instance.playerHitSound);
+        }
 
         if (currentHealth <= 0)
         {
