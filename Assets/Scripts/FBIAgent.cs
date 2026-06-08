@@ -22,9 +22,14 @@ public class FBIAgent : MonoBehaviour
     [Header("Animação")]
     private Animator animator;
 
+    [Header("Sons")]
+    public AudioClip shootSound;
+    private AudioSource audioSource;
+
     void Start()
     {
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
@@ -108,6 +113,11 @@ public class FBIAgent : MonoBehaviour
         if (bulletPrefab && firePoint)
         {
             if (animator != null) animator.SetTrigger("Shoot");
+
+            if (audioSource != null && shootSound != null)
+            {
+                audioSource.PlayOneShot(shootSound);
+            }
 
             GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             

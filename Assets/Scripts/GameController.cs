@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -18,12 +19,18 @@ public class GameController : MonoBehaviour
 
     //sons
     public AudioSource bgMusic;
+    public AudioSource sfxSource;
     public AudioClip playerHitSound;
     public AudioClip enemyDeathSound;
 
     //gameover e victory
     public GameObject gameOver;
     public GameObject victoryScreen;
+
+    [Header("UI de Corações (Canvas)")]
+    public Image[] imagensCoracoes; 
+    public Sprite coracaoInteiro;  
+    public Sprite coracaoQuebrado; 
 
     //pause
     [SerializeField] private GameObject pauseMenu;
@@ -94,7 +101,6 @@ public class GameController : MonoBehaviour
     {
         if (lives < 0 && Time.timeScale == 1f && SceneManager.GetActiveScene().name == "GameOver") return;
 
-        PlayEffect(playerHitSound);
         lives--;
         UpdateLivesText();
 
@@ -202,6 +208,23 @@ public class GameController : MonoBehaviour
         if (clip != null && bgMusic != null)
         {
             bgMusic.PlayOneShot(clip);
+        }
+    }
+
+    public void AtualizarCoracoesUI(int vidaAtualDoPlayer)
+    {
+        for (int i = 0; i < imagensCoracoes.Length; i++)
+        {
+            if (imagensCoracoes[i] == null) continue;
+
+            if (i < vidaAtualDoPlayer)
+            {
+                imagensCoracoes[i].sprite = coracaoInteiro;
+            }
+            else
+            {
+                imagensCoracoes[i].sprite = coracaoQuebrado;
+            }
         }
     }
 }

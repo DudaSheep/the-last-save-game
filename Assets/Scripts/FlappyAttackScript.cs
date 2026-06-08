@@ -11,10 +11,8 @@ public class FlappyAttackScript : MonoBehaviour
     [Header("Configurações do Ataque")]
     public float dashSpeed = 25f;        
     public float prepareTime = 1f; // Tempo que ele passa irritado se preparando
-    [Tooltip("Quantidade TOTAL de investidas antes de morrer")]
-    public int quantidadeTotalDeInvestidas = 3; 
     [Tooltip("Tempo que os canos voltam a correr enquanto ele descansa na base")]
-    public float tempoDeEsperaNaBase = 2.0f; // Aumentado um pouco para dar tempo de passar canos
+    public float tempoDeEsperaNaBase = 2.0f; 
 
     [Header("Configuração do Sprite")]
     public bool spriteOriginalOlhaEsquerda = true; 
@@ -49,15 +47,14 @@ public class FlappyAttackScript : MonoBehaviour
     {
         isPreparing = true;
 
-        // O LOOP PRINCIPAL
-        for (int i = 0; i < quantidadeTotalDeInvestidas; i++)
+        while (true)
         {
             // ----------------------------------------------------
             // ETAPA 1: TRAVA OS PIPES E FICA IRRITADO
             // ----------------------------------------------------
             if (spawner != null)
             {
-                spawner.isSpawning = false; // Para os canos ANTES do ataque começar
+                spawner.isSpawning = false; 
             }
 
             rb.velocity = Vector2.zero;
@@ -107,16 +104,6 @@ public class FlappyAttackScript : MonoBehaviour
             transform.localScale = escalaOriginal;
 
             // ----------------------------------------------------
-            // CHECAGEM DE MORTE (Se for a última, morre no lugar)
-            // ----------------------------------------------------
-            if (i == quantidadeTotalDeInvestidas - 1)
-            {
-                Debug.Log("Última investida concluída! Destruindo o Flappy.");
-                Destroy(gameObject);
-                yield break; 
-            }
-
-            // ----------------------------------------------------
             // ETAPA 3: RETORNO SUAVE PARA A BASE
             // ----------------------------------------------------
             yield return new WaitForSeconds(0.2f); 
@@ -137,11 +124,19 @@ public class FlappyAttackScript : MonoBehaviour
             // ----------------------------------------------------
             if (spawner != null)
             {
-                spawner.isSpawning = true; // RELIGA OS CANOS!
+                spawner.isSpawning = true; 
             }
 
             // O Boss fica lá na base parado enquanto o jogador desvia dos canos neste intervalo
             yield return new WaitForSeconds(tempoDeEsperaNaBase);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (spawner != null)
+        {
+            spawner.isSpawning = true;
         }
     }
 }
