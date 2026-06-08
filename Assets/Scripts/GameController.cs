@@ -76,6 +76,8 @@ public class GameController : MonoBehaviour
 
     public void LoseLife()
     {
+        if (lives < 0 && Time.timeScale == 1f && SceneManager.GetActiveScene().name == "GameOver") return;
+
         PlayEffect(playerHitSound);
         lives--;
         UpdateLivesText();
@@ -84,6 +86,9 @@ public class GameController : MonoBehaviour
         {
             lives = 0;
             UpdateLivesText();
+
+            // Cancela qualquer reinício de fase agendado por engano
+            CancelInvoke("RestartLevel");
 
             Time.timeScale = 1f;
             SceneManager.LoadScene("GameOver");
