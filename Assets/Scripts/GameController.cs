@@ -5,15 +5,15 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     //mainmenu e play
-    [SerializeField] private string level1SceneName = "lvl1";
+    [SerializeField] private string level1SceneName = "Stage1_et";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
-    
+
     //score
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
     //vida
-    public static int lives = 1; 
+    public static int lives = 1;
     public TextMeshProUGUI livesText;
 
     //sons
@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
 
     //gameover e victory
     public GameObject gameOver;
-    public GameObject victoryScreen; 
+    public GameObject victoryScreen;
 
     //pause
     [SerializeField] private GameObject pauseMenu;
@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
 
     public static GameController instance;
 
-    void Awake() 
+    void Awake()
     {
         instance = this;
     }
@@ -44,22 +44,22 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-    if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
-    {
-        if (isPaused)
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            Resume();
+            if (isPaused)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
         }
-        else
-        {
-            Pause();
-        }
-    }
     }
 
     public void UpdateScoreText()
     {
-        if (scoreText != null) 
+        if (scoreText != null)
         {
             scoreText.text = totalScore.ToString();
         }
@@ -84,7 +84,9 @@ public class GameController : MonoBehaviour
         {
             lives = 0;
             UpdateLivesText();
-            ShowGameOver();
+
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("GameOver");
         }
         else
         {
@@ -102,14 +104,14 @@ public class GameController : MonoBehaviour
     public void Pause()
     {
         pauseMenu.SetActive(true);
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
         isPaused = true;
     }
 
     public void Resume()
     {
         pauseMenu.SetActive(false);
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
         isPaused = false;
     }
 
@@ -133,8 +135,8 @@ public class GameController : MonoBehaviour
 
     public void PlayAgainFromStart()
     {
-        totalScore = 0; 
-        lives = 1;      
+        totalScore = 0;
+        lives = 1;
         Time.timeScale = 1f;
         SceneManager.LoadScene(level1SceneName);
     }
