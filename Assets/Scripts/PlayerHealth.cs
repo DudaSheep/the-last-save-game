@@ -74,6 +74,11 @@ public class PlayerHealth : MonoBehaviour
         //     anim.SetTrigger("death"); // Ajuste o nome se sua animação for diferente
         // }
 
+        if (GameController.instance != null)
+        {
+            GameController.instance.Invoke("LoseLife", 0.5f);
+        }
+
         Destroy(gameObject, 1.5f);
     }
 }

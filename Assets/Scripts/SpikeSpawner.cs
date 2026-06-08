@@ -9,9 +9,9 @@ public class SpikeSpawner : MonoBehaviour
     [Tooltip("Intervalo entre as quedas de spikes durante a chuva (ex: 0.4 para cair rápido)")]
     public float spawnRate = 0.4f;
 
-    [Header("Variação Horizontal")]
-    [Tooltip("O quanto a estaca pode desviar para a esquerda ou direita a partir do centro do Spawner")]
-    public float widthOffset = 8f;
+    [Header("Variação Horizontal (Baseada na Tela)")]
+    [Tooltip("O quanto a estaca pode desviar para a esquerda ou direita a partir do CENTRO DA CÂMERA (Ex: 8f a 10f costuma cobrir a tela cheia)")]
+    public float widthOffset = 9f;
 
     // Controla se os spikes podem cair
     private bool podeSpawnar = false;
@@ -19,14 +19,23 @@ public class SpikeSpawner : MonoBehaviour
 
     void SpawnSpike()
     {
-        // Calcula os limites esquerdo e direito baseados no widthOffset
-        float lowestPointX = transform.position.x - widthOffset;
-        float highestPointX = transform.position.x + widthOffset;
+        float centroX = transform.position.x;
 
-        // Sorteia uma posição X aleatória, mas mantém a altura Y fixa do Spawner
+        // Tenta encontrar a câmera principal do jogo dinamicamente
+        if (Camera.main != null)
+        {
+            // O centro do ataque agora é a posição X atual da câmera que segue o player!
+            centroX = Camera.main.transform.position.y >= -100 ? Camera.main.transform.position.x : transform.position.x;
+        }
+
+        // Calcula os limites baseando-se no centro dinâmico da câmera
+        float lowestPointX = centroX - widthOffset;
+        float highestPointX = centroX + widthOffset;
+
+        // Sorteia uma posição X aleatória na tela, mantendo a altura Y fixa do seu teto/Spawner
         Vector3 spawnPosition = new Vector3(Random.Range(lowestPointX, highestPointX), transform.position.y, 0);
 
-        // Instancia o spike no teto fora da visao do jogador
+        // Instancia o spike no teto acompanhando a visão do jogador
         Instantiate(spikePrefab, spawnPosition, transform.rotation);
     }
 
@@ -65,12 +74,12 @@ public class SpikeSpawner : MonoBehaviour
         podeSpawnar = false; // Desliga o spawner apos o termino do tempo
     }
 
-    // Desenha uma linha visual na Scene para ajudar a enxergar a area de spawn
+    // Desenha uma linha visual na Scene baseada no objeto para ajuste inicial
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Vector3 esquerda = new Vector3(transform.position.x - widthOffset, transform.position.y, 0);
-        Vector3 direita = new Vector3(transform.position.x + widthOffset, transform.position.y, 0);
-        Gizmos.DrawLine(esquerda, direita);
+        Vector3 derecha = new Vector3(transform.position.x + widthOffset, transform.position.y, 0);
+        Gizmos.DrawLine(esquerda, derecha);
     }
 }
