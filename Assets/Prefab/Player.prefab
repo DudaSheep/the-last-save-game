@@ -141,7 +141,7 @@ MonoBehaviour:
   attackRange: 0.5
   attackableLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 4224
   dashForce: 15
   dashDuration: 0.2
   dashCooldown: 1

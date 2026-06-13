@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/GameOver.unity
-    guid: c0c98df79b2f674478fec26e45b7f346
-  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 72f849f8f4f4148f4b907e5138a9c752
   - enabled: 1
@@ -26,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage3_clubPinguin.unity
     guid: 8a4836d45619ec24db4f313bcf4f4786
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: c0c98df79b2f674478fec26e45b7f346
   m_configObjects: {}
