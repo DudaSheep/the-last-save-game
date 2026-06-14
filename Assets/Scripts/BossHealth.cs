@@ -68,10 +68,25 @@ public class BossHealth : MonoBehaviour
             }
         }
 
-        Invoke("CarregarProximaFase", 1.5f);
+        Invoke("ExecutarDropEfeito", 1.5f);
 
         // Remove o Boss da cena
         Destroy(gameObject, 1.5f);
+    }
+
+
+    // funcao do pra chamar o drop do item (boss)
+    void ExecutarDropEfeito()
+    {
+        LootDropper dropper = GetComponent<LootDropper>();
+        if (dropper != null)
+        {
+            dropper.DroparItem();
+        }
+        else
+        {
+            CarregarProximaFase(); // caso nao ache o objeto passa pra main menu
+        }
     }
 
     void CarregarProximaFase()
@@ -86,7 +101,7 @@ public class BossHealth : MonoBehaviour
         else
         {
             Debug.LogWarning("Não há mais fases depois desta no Build Settings! Voltando ao menu principal...");
-            SceneManager.LoadScene("MainMenu"); 
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
