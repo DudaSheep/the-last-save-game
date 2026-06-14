@@ -1009,15 +1009,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35eef41a4dbc540b6bb62bcb0a080836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level1SceneName: Stage1_et
+  level1SceneName: CutsceneIntro
   mainMenuSceneName: MainMenu
   scoreText: {fileID: 0}
   livesText: {fileID: 0}
   bgMusic: {fileID: 895961240}
+  sfxSource: {fileID: 0}
   playerHitSound: {fileID: 0}
   enemyDeathSound: {fileID: 0}
   gameOver: {fileID: 0}
   victoryScreen: {fileID: 0}
+  imagensCoracoes: []
+  coracaoInteiro: {fileID: 0}
+  coracaoQuebrado: {fileID: 0}
   pauseMenu: {fileID: 0}
 --- !u!4 &895961239
 Transform:

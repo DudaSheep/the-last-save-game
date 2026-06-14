@@ -51,6 +51,11 @@ public class Player : MonoBehaviour
         //se tiver executando o dash, trava as ações normais
         if (isDashing) return;
 
+        if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
+        {
+            return; 
+        }
+
         Move();
         Jump();
         CheckAttack();
