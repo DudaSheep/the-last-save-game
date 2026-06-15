@@ -9,6 +9,9 @@ public class BossHealth : MonoBehaviour
     public int currentHealth = 20;
     private bool isDead = false;
 
+    [HideInInspector]
+    public bool podeTomarDano = true; 
+
     [Header("Componentes para Desativar na Morte")]
     [Tooltip("Arraste para cá os scripts de IA/Ataque específicos de cada boss (ex: BossET)")]
     public MonoBehaviour[] componentsToDisable;
@@ -22,7 +25,8 @@ public class BossHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isDead || currentHealth <= 0) return;
+        // Se estiver morto ou no tempo de respiro da transição de fase, ignora o dano completamente
+        if (isDead || currentHealth <= 0 || !podeTomarDano) return;
 
         currentHealth -= damage;
         Debug.Log($"{gameObject.name} tomou {damage} de dano! Vida restante: {currentHealth}");
@@ -57,9 +61,6 @@ public class BossHealth : MonoBehaviour
             GameController.instance.PlayEffect(GameController.instance.enemyDeathSound);
         }
 
-        // Ativa o gatilho de morte no Animator
-        // if (anim != null) anim.SetTrigger("MorteTrigger");
-
         foreach (MonoBehaviour script in componentsToDisable)
         {
             if (script != null)
@@ -93,7 +94,6 @@ public class BossHealth : MonoBehaviour
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
 
-        // Verifica se a próxima fase realmente existe na lista do Build Settings
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextSceneIndex);

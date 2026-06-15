@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement; // Adicionado para gerenciar a troca de cenas
+using UnityEngine.SceneManagement;
 
 public class AmalgamadoBoss : MonoBehaviour
 {
@@ -16,13 +16,28 @@ public class AmalgamadoBoss : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Transform playerTransform;
 
-    // Referência ao script de vida genérico
     private BossHealth bossHealth;
     private float maxHealthOriginal;
 
-    // Interruptores de segurança para as transições estáveis
     private bool iniciouFase2 = false;
     private bool iniciouFase3 = false;
+
+    private Color corDefinitivaDoBoss;
+
+    [Header("Configurações de Balanceamento")]
+    [Tooltip("Duração (em segundos) que o Boss ficará invulnerável ao mudar de fase")]
+    public float tempoInvuneravelTransicao = 2.5f;
+
+
+    [Header("Fase 1 - Configurações da Foice")]
+    [Tooltip("Arraste aqui um GameObject vazio criado dentro do Boss, posicionado onde a foice bate")]
+    public Transform hitPointFoice;
+    [Tooltip("Raio da área de dano circular do golpe")]
+    public float raioAtaqueFoice = 1.8f;
+    [Tooltip("Quantidade de corações que esse golpe vai tirar do jogador")]
+    public int danoFoice = 1;
+    [Tooltip("Selecione a Layer do seu Player para que o Boss saiba quem atingir")]
+    public LayerMask layerDoPlayer;
 
     [Header("Fase 2 - Configurações")]
     public GameObject paredeEspinhosEsquerda;
@@ -47,6 +62,12 @@ public class AmalgamadoBoss : MonoBehaviour
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         bossHealth = GetComponent<BossHealth>();
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            corDefinitivaDoBoss = spriteRenderer.color;
+        }
 
         // Checkpint para Boss
         Debug.Log("boss checkpoint!!");
@@ -102,22 +123,66 @@ public class AmalgamadoBoss : MonoBehaviour
         {
             iniciouFase3 = true;
             currentPhase = BossPhase.Phase3_ClubPenguin;
-            Debug.Log($"❄️ FASE 3: {healthPercentage:F1}% de vida restante! Iniciando sequência do Club Penguin.");
+            Debug.Log($"❄️ FASE 3: {healthPercentage:F1}% de vida restante! Ativando tempo de respiro.");
 
-            if (spawnerFlappyBird != null) spawnerFlappyBird.SetActive(false);
-            if (paredeEspinhosEsquerda != null) paredeEspinhosEsquerda.SetActive(false);
-
+            // Ativa o escudo e para a sequência anterior para iniciar a transição limpa
             StopCoroutine("BossAISequence");
-            StartCoroutine(SequenciaAtaquesFase3());
+            StartCoroutine(RoutineRespiroTransicao(3));
         }
         else if (healthPercentage <= 70f && healthPercentage > 40f && !iniciouFase2)
         {
             iniciouFase2 = true;
             currentPhase = BossPhase.Phase2_Espinhos;
-            Debug.Log($"🟥 FASE 2: {healthPercentage:F1}% de vida restante! Ativando Arena de Espinhos.");
+            Debug.Log($"🟥 FASE 2: {healthPercentage:F1}% de vida restante! Ativando tempo de respiro.");
 
+            StartCoroutine(RoutineRespiroTransicao(2));
+        }
+    }
+
+    // Coroutine responsável por dar o escudo de invulnerabilidade e o feedback visual
+    IEnumerator RoutineRespiroTransicao(int proximaFase)
+    {
+        if (bossHealth != null) bossHealth.podeTomarDano = false;
+        isAttacking = true; // Bloqueia ataques normais temporariamente
+
+        LimparAtaquesCena();
+
+        // Feedback Visual: Pisca o Boss meio transparente para indicar invulnerabilidade
+        Color corOriginal = spriteRenderer != null ? spriteRenderer.color : Color.white;
+        float transcorrido = 0f;
+
+        while (transcorrido < tempoInvuneravelTransicao)
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = new Color(corDefinitivaDoBoss.r, corDefinitivaDoBoss.g, corDefinitivaDoBoss.b, 0.4f);
+
+            yield return new WaitForSeconds(0.15f);
+
+            if (spriteRenderer != null)
+                spriteRenderer.color = corDefinitivaDoBoss;
+
+            yield return new WaitForSeconds(0.15f);
+            transcorrido += 0.3f;
+        }
+
+        if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss;
+        // Configurações específicas pós-respiro de cada fase
+        if (proximaFase == 2)
+        {
             if (paredeEspinhosEsquerda != null) paredeEspinhosEsquerda.SetActive(true);
         }
+        else if (proximaFase == 3)
+        {
+            if (spawnerFlappyBird != null) spawnerFlappyBird.SetActive(false);
+            if (paredeEspinhosEsquerda != null) paredeEspinhosEsquerda.SetActive(false);
+
+            // Inicia os loops de ataque da fase 3 após o descanso
+            StartCoroutine(SequenciaAtaquesFase3());
+        }
+
+        // Libera o Boss para receber dano e agir novamente
+        if (bossHealth != null) bossHealth.podeTomarDano = true;
+        isAttacking = false;
     }
 
     IEnumerator BossAISequence()
@@ -151,9 +216,7 @@ public class AmalgamadoBoss : MonoBehaviour
         {
             Debug.Log("🎈 Canos começando a surgir!");
             spawnerFlappyBird.SetActive(true);
-
             yield return new WaitForSeconds(tempoAtaqueCanos);
-
             spawnerFlappyBird.SetActive(false);
             Debug.Log("🛑 Canos pararam! Preparando investida.");
         }
@@ -168,24 +231,55 @@ public class AmalgamadoBoss : MonoBehaviour
         if (anim != null) anim.SetTrigger("attack");
     }
 
+    public void DispararDanoDaFoice()
+    {
+        if (hitPointFoice == null)
+        {
+            return;
+        }
+
+        Collider2D playerAtingido = Physics2D.OverlapCircle(hitPointFoice.position, raioAtaqueFoice, layerDoPlayer);
+
+        if (playerAtingido != null)
+        {
+            PlayerHealth vida = playerAtingido.GetComponent<PlayerHealth>();
+
+            if (vida == null)
+            {
+                vida = playerAtingido.GetComponentInParent<PlayerHealth>();
+            }
+            if (vida == null)
+            {
+                vida = playerAtingido.GetComponentInChildren<PlayerHealth>();
+            }
+
+            // Se encontrou o script de vida de qualquer uma das formas
+            if (vida != null)
+            {
+                vida.TakeDamage(danoFoice);
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ A foice colidiu com " + playerAtingido.name + " na camada Player, mas o script 'PlayerHealth' não foi encontrado em lugar nenhum desse objeto!");
+            }
+        }
+    }
+
     IEnumerator AvisoEInvestida()
     {
-        Debug.Log("🟥 Alerta Vermelho! O Boss vai avançar!");
-        Color corOriginal = spriteRenderer.color;
         float timer = 0f;
 
         while (timer < tempoAvisoVermelho)
         {
-            spriteRenderer.color = Color.red;
+            if (spriteRenderer != null) spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-            spriteRenderer.color = corOriginal;
+            if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss; // Usa a cor segura
             yield return new WaitForSeconds(0.2f);
             timer += 0.4f;
         }
-        spriteRenderer.color = corOriginal;
+        if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss; // Garante o reset total
 
         if (anim != null) anim.SetTrigger("attack");
-        Debug.Log("💥 INVESTIDA! Empurrando o jogador contra a parede esquerda!");
 
         if (playerTransform != null)
         {
@@ -202,6 +296,9 @@ public class AmalgamadoBoss : MonoBehaviour
         while (currentPhase == BossPhase.Phase3_ClubPenguin)
         {
             yield return new WaitForSeconds(attackCooldown);
+
+            // Evita disparar os mega ataques caso o boss esteja no meio da transição
+            if (isAttacking) continue;
 
             if (spawnerEstacasTeto != null)
             {
@@ -229,9 +326,7 @@ public class AmalgamadoBoss : MonoBehaviour
             {
                 groundShockCena.SetActive(true);
                 yield return new WaitForSeconds(tempoDuraçãoShock);
-
                 groundShockCena.SetActive(false);
-                Debug.Log("🛡️ GroundShock desligado! Fim do ciclo.");
             }
 
             yield return new WaitForSeconds(1.0f);
@@ -245,11 +340,9 @@ public class AmalgamadoBoss : MonoBehaviour
         if (groundShockCena != null) groundShockCena.SetActive(false);
     }
 
-
     public void FinalizarMorteDoBoss()
     {
         Debug.Log("🏆 Animação terminada! Mudando de cena com segurança.");
-
         PlayerPrefs.DeleteKey("BossCheckpoint");
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
 
@@ -259,11 +352,18 @@ public class AmalgamadoBoss : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Não há mais fases no Build Settings! Retornando ao MainMenu.");
             SceneManager.LoadScene("MainMenu");
         }
 
-        // Desativa o objeto do Boss para evitar lógicas residuais antes de descarregar a cena completamente
         gameObject.SetActive(false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (hitPointFoice != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(hitPointFoice.position, raioAtaqueFoice);
+        }
     }
 }
