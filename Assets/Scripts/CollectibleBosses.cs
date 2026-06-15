@@ -10,8 +10,8 @@ public class CollectibleBosses : MonoBehaviour
     [Header("Configurações do Drop")]
     public TipoDrop tipoDesteItem;
 
-    [Header("Nome da Cena do Menu Inicial")]
-    public string nomeCenaMenu = "MainMenu";
+    // [Header("Nome da Cena do Menu Inicial")]
+    // public string nomeCenaMenu = "CutsceneFinal";
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -43,7 +43,7 @@ public class CollectibleBosses : MonoBehaviour
         if (tipoDesteItem == TipoDrop.BossFinal)
         {
             Destroy(gameObject);
-            SceneManager.LoadScene(nomeCenaMenu);
+            SceneManager.LoadScene("CutsceneFinal");
         }
         else
         {
