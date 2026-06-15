@@ -10,7 +10,7 @@ public class BossHealth : MonoBehaviour
     private bool isDead = false;
 
     [HideInInspector]
-    public bool podeTomarDano = true;
+    public bool podeTomarDano = true; 
 
     [Header("Componentes para Desativar na Morte")]
     [Tooltip("Arraste para cá os scripts de IA/Ataque específicos de cada boss (ex: BossET)")]
@@ -25,6 +25,7 @@ public class BossHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        // Se estiver morto ou no tempo de respiro da transição de fase, ignora o dano completamente
         if (isDead || currentHealth <= 0 || !podeTomarDano) return;
 
         currentHealth -= damage;
@@ -60,9 +61,6 @@ public class BossHealth : MonoBehaviour
             GameController.instance.PlayEffect(GameController.instance.enemyDeathSound);
         }
 
-        // Ativa o gatilho de morte no Animator
-        // if (anim != null) anim.SetTrigger("MorteTrigger");
-
         foreach (MonoBehaviour script in componentsToDisable)
         {
             if (script != null)
@@ -71,17 +69,31 @@ public class BossHealth : MonoBehaviour
             }
         }
 
-        Invoke("CarregarProximaFase", 1.5f);
+        Invoke("ExecutarDropEfeito", 1.5f);
 
         // Remove o Boss da cena
         Destroy(gameObject, 1.5f);
+    }
+
+
+    // funcao do pra chamar o drop do item (boss)
+    void ExecutarDropEfeito()
+    {
+        LootDropper dropper = GetComponent<LootDropper>();
+        if (dropper != null)
+        {
+            dropper.DroparItem();
+        }
+        else
+        {
+            CarregarProximaFase(); // caso nao ache o objeto passa pra main menu
+        }
     }
 
     void CarregarProximaFase()
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
 
-        // Verifica se a próxima fase realmente existe na lista do Build Settings
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextSceneIndex);
@@ -89,7 +101,7 @@ public class BossHealth : MonoBehaviour
         else
         {
             Debug.LogWarning("Não há mais fases depois desta no Build Settings! Voltando ao menu principal...");
-            SceneManager.LoadScene("MainMenu"); 
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
