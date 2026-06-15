@@ -48,6 +48,12 @@ public class CollectibleBosses : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            // Carrega para a próxima fase da fila do Build Settings
+            int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+            {
+                SceneManager.LoadScene(nextSceneIndex);
+            }
         }
     }
 }
