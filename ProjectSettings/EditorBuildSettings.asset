@@ -13,7 +13,7 @@ EditorBuildSettings:
     guid: 9d7a8d4ed70ec4a6e9c46c15f81feb96
   - enabled: 1
     path: Assets/Scenes/Stage1_et.unity
-    guid: 3f720d84919a445c4bc2db3132f56c15
+    guid: da99bf86d6e0b49149cef8a874316c9c
   - enabled: 1
     path: Assets/Scenes/Stage1_etboss.unity
     guid: 222b2c98fa9ac48fe8d129dacc25b2b7
@@ -23,6 +23,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage3_clubPinguin.unity
     guid: 8a4836d45619ec24db4f313bcf4f4786
+  - enabled: 1
+    path: Assets/Scenes/FinalStage.unity
+    guid: 237b7fa1de6d47d4b9bc8e009c6c22bf
   - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: c0c98df79b2f674478fec26e45b7f346
