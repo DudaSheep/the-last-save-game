@@ -1372,15 +1372,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-    Lorem Ipsum has been the industry's standard dummy text ever since 1966, when
-    designers at Letraset and James Mosley, the librarian at St Bride Printing Library
-    in London, took a 1914 Cicero translation and scrambled it to make dummy text
-    for Letraset's Body Type sheets. It has survived not only many decades, but also
-    the leap into electronic typesetting, remaining essentially unchanged.
+  m_text: "Flappy Bird (2013)\nCom mec\xE2nica minimalista, desafiava o jogador a
+    guiar um p\xE1ssaro por uma fileira infinita de canos, testando reflexos e paci\xEAncia.
+    O jogo virou um fen\xF4meno global viral, gerando fortunas. Mas seu fim veio
+    pelo pr\xF3prio sucesso: culpado pelo v\xEDcio extremo dos jogadores e pela perda
+    de sua paz, o criador removeu o game das lojas no auge, tornando-o um grande
+    mito digital."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
+  m_sharedMaterial: {fileID: -6677993086776333435, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1404,8 +1404,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1817,15 +1817,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-    Lorem Ipsum has been the industry's standard dummy text ever since 1966, when
-    designers at Letraset and James Mosley, the librarian at St Bride Printing Library
-    in London, took a 1914 Cicero translation and scrambled it to make dummy text
-    for Letraset's Body Type sheets. It has survived not only many decades, but also
-    the leap into electronic typesetting, remaining essentially unchanged.
+  m_text: "Club Penguin (2005)\nA premissa l\xFAdica era criar um pinguim colorido,
+    explorar uma ilha gelada, adotar Puffles e interagir com milhares de jogadores
+    em um ambiente virtual seguro. O jogo virou uma febre mundial e foi comprado
+    pela Disney. No entanto, seu decaimento veio com a mudan\xE7a dos tempos: a transi\xE7\xE3o
+    dos jogadores para os smartphones e redes sociais esvaziou a ilha, levando ao
+    encerramento oficial dos servidores em 2017."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
-  m_sharedMaterial: {fileID: 7230023141424753759, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
+  m_sharedMaterial: {fileID: -6677993086776333435, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2236,9 +2236,8 @@ MonoBehaviour:
   enemyDeathSound: {fileID: 0}
   gameOver: {fileID: 0}
   victoryScreen: {fileID: 0}
-  imagensCoracoes: []
-  coracaoInteiro: {fileID: 0}
-  coracaoQuebrado: {fileID: 0}
+  imagemBarraDeVida: {fileID: 0}
+  framesBarraDeVida: []
   pauseMenu: {fileID: 0}
 --- !u!4 &895961239
 Transform:
@@ -2596,15 +2595,18 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-    Lorem Ipsum has been the industry's standard dummy text ever since 1966, when
-    designers at Letraset and James Mosley, the librarian at St Bride Printing Library
-    in London, took a 1914 Cicero translation and scrambled it to make dummy text
-    for Letraset's Body Type sheets. It has survived not only many decades, but also
-    the leap into electronic typesetting, remaining essentially unchanged.
+  m_text: "Atari E.T. (1982)\nLan\xE7ado para pegar carona no sucesso estrondoso
+    do filme de Steven Spielberg, o jogo tinha a premissa l\xFAdica de ajudar o carism\xE1tico
+    alien\xEDgena a coletar pe\xE7as de um telefone intergal\xE1ctico para \"ligar
+    para casa\". Desenvolvido \xE0s pressas em apenas cinco semanas para o Natal,
+    o t\xEDtulo chegou ao mercado repleto de bugs e com uma jogabilidade frustrante
+    de quedas infinitas em buracos. O fracasso comercial foi t\xE3o colossal que
+    resultou em milh\xF5es de cartuchos encalhados, enterrados em um deserto no Novo
+    M\xE9xico, tornando-se o grande s\xEDmbolo do colapso da ind\xFAstria de jogos
+    em 1983."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
+  m_sharedMaterial: {fileID: -6677993086776333435, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2628,8 +2630,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3078,7 +3080,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4d58c2e8db3d93e4e99e21f8a9fa76d9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bdc02d83cd0b7644d90f85d74cc6be9c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3481,15 +3483,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-    Lorem Ipsum has been the industry's standard dummy text ever since 1966, when
-    designers at Letraset and James Mosley, the librarian at St Bride Printing Library
-    in London, took a 1914 Cicero translation and scrambled it to make dummy text
-    for Letraset's Body Type sheets. It has survived not only many decades, but also
-    the leap into electronic typesetting, remaining essentially unchanged.
+  m_text: PARABENS !!!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
-  m_sharedMaterial: {fileID: 7230023141424753759, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
+  m_sharedMaterial: {fileID: -6677993086776333435, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
