@@ -854,8 +854,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Mais uma alma recolhida no final de um longo dia de trabalho
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
-  m_sharedMaterial: {fileID: 7230023141424753759, guid: e0003cbde26ae47818ad10dc741604cf, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
+  m_sharedMaterial: {fileID: -6677993086776333435, guid: 08002e439d01f4f8b90473ce942ce2d0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
