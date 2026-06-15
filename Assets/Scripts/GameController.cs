@@ -13,8 +13,7 @@ public class GameController : MonoBehaviour
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
-    // vida 
-    public static int lives = 5; 
+    public static int lives = 1; 
     public TextMeshProUGUI livesText;
 
     //sons
@@ -87,7 +86,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-
     public void UpdateLivesText()
     {
         if (livesText != null)
@@ -102,13 +100,11 @@ public class GameController : MonoBehaviour
 
         lives--;
         UpdateLivesText();
-        AtualizarBarraDeVidaUI(lives); // Atualiza a barra sempre que perder vida
 
         if (lives <= 0)
         {
             lives = 0;
             UpdateLivesText();
-            AtualizarBarraDeVidaUI(lives);
 
             if (bgMusic != null)
             {
@@ -127,13 +123,8 @@ public class GameController : MonoBehaviour
 
     public void GainLife()
     {
-        // Impede que a vida passe do limite máximo de frames 
-        if (lives < framesBarraDeVida.Length - 1)
-        {
-            lives++;
-            UpdateLivesText();
-            AtualizarBarraDeVidaUI(lives);
-        }
+        lives++;
+        UpdateLivesText();
     }
 
     public void Pause()
@@ -191,8 +182,7 @@ public class GameController : MonoBehaviour
     public void PlayAgainFromStart()
     {
         totalScore = 0;
-        // Ajuste a vida inicial de acordo com o limite máximo
-        lives = framesBarraDeVida.Length > 0 ? framesBarraDeVida.Length - 1 : 5; 
+        lives = 1;
         Time.timeScale = 1f;
         SceneManager.LoadScene(level1SceneName);
     }
@@ -200,7 +190,7 @@ public class GameController : MonoBehaviour
     public void PlayGame()
     {
         totalScore = 0;
-        lives = framesBarraDeVida.Length > 0 ? framesBarraDeVida.Length - 1 : 5;
+        lives = 1;
         SceneManager.LoadScene(level1SceneName);
     }
 
@@ -222,9 +212,7 @@ public class GameController : MonoBehaviour
     {
         if (imagemBarraDeVida != null && framesBarraDeVida != null && framesBarraDeVida.Length > 0)
         {
-
             int indexSeguro = Mathf.Clamp(vidaAtualDoPlayer, 0, framesBarraDeVida.Length - 1);
-            
             imagemBarraDeVida.sprite = framesBarraDeVida[indexSeguro];
         }
     }
