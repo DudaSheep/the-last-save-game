@@ -13,8 +13,8 @@ public class GameController : MonoBehaviour
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
-    //vida
-    public static int lives = 1;
+    // vida 
+    public static int lives = 5; 
     public TextMeshProUGUI livesText;
 
     //sons
@@ -27,12 +27,11 @@ public class GameController : MonoBehaviour
     public GameObject gameOver;
     public GameObject victoryScreen;
 
-    [Header("UI de Corações (Canvas)")]
-    public Image[] imagensCoracoes; 
-    public Sprite coracaoInteiro;  
-    public Sprite coracaoQuebrado; 
+    [Header("UI da Barra de Vida (Canvas)")]
+    public Image imagemBarraDeVida;   
+    public Sprite[] framesBarraDeVida; 
 
-    //pause
+    // pause
     [SerializeField] private GameObject pauseMenu;
     private bool isPaused;
 
@@ -103,11 +102,13 @@ public class GameController : MonoBehaviour
 
         lives--;
         UpdateLivesText();
+        AtualizarBarraDeVidaUI(lives); // Atualiza a barra sempre que perder vida
 
         if (lives <= 0)
         {
             lives = 0;
             UpdateLivesText();
+            AtualizarBarraDeVidaUI(lives);
 
             if (bgMusic != null)
             {
@@ -126,8 +127,13 @@ public class GameController : MonoBehaviour
 
     public void GainLife()
     {
-        lives++;
-        UpdateLivesText();
+        // Impede que a vida passe do limite máximo de frames 
+        if (lives < framesBarraDeVida.Length - 1)
+        {
+            lives++;
+            UpdateLivesText();
+            AtualizarBarraDeVidaUI(lives);
+        }
     }
 
     public void Pause()
@@ -185,7 +191,8 @@ public class GameController : MonoBehaviour
     public void PlayAgainFromStart()
     {
         totalScore = 0;
-        lives = 1;
+        // Ajuste a vida inicial de acordo com o limite máximo
+        lives = framesBarraDeVida.Length > 0 ? framesBarraDeVida.Length - 1 : 5; 
         Time.timeScale = 1f;
         SceneManager.LoadScene(level1SceneName);
     }
@@ -193,7 +200,7 @@ public class GameController : MonoBehaviour
     public void PlayGame()
     {
         totalScore = 0;
-        lives = 1;
+        lives = framesBarraDeVida.Length > 0 ? framesBarraDeVida.Length - 1 : 5;
         SceneManager.LoadScene(level1SceneName);
     }
 
@@ -211,20 +218,14 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void AtualizarCoracoesUI(int vidaAtualDoPlayer)
+    public void AtualizarBarraDeVidaUI(int vidaAtualDoPlayer)
     {
-        for (int i = 0; i < imagensCoracoes.Length; i++)
+        if (imagemBarraDeVida != null && framesBarraDeVida != null && framesBarraDeVida.Length > 0)
         {
-            if (imagensCoracoes[i] == null) continue;
 
-            if (i < vidaAtualDoPlayer)
-            {
-                imagensCoracoes[i].sprite = coracaoInteiro;
-            }
-            else
-            {
-                imagensCoracoes[i].sprite = coracaoQuebrado;
-            }
+            int indexSeguro = Mathf.Clamp(vidaAtualDoPlayer, 0, framesBarraDeVida.Length - 1);
+            
+            imagemBarraDeVida.sprite = framesBarraDeVida[indexSeguro];
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Configurações de Vida")]
-    public int maxHealth = 3;
+    public int maxHealth = 5;
     public int currentHealth;
 
     [Header("Feedback de Dano")]
@@ -21,7 +21,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (GameController.instance != null)
         {
-            GameController.instance.AtualizarCoracoesUI(currentHealth);
+            GameController.instance.AtualizarBarraDeVidaUI(currentHealth);
         }
     }
 
@@ -31,11 +31,11 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible || currentHealth <= 0) return;
 
         currentHealth -= damage;
-        Debug.Log("❤️ Dona Morte levou dano! Corações restantes: " + currentHealth);
+        Debug.Log("❤️ Dona Morte levou dano! Vida restante: " + currentHealth);
 
         if (GameController.instance != null)
         {
-            GameController.instance.AtualizarCoracoesUI(currentHealth);
+            GameController.instance.AtualizarBarraDeVidaUI(currentHealth);
         }
 
         if (GameController.instance != null && GameController.instance.playerHitSound != null)

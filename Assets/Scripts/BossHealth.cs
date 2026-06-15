@@ -9,6 +9,9 @@ public class BossHealth : MonoBehaviour
     public int currentHealth = 20;
     private bool isDead = false;
 
+    [HideInInspector]
+    public bool podeTomarDano = true;
+
     [Header("Componentes para Desativar na Morte")]
     [Tooltip("Arraste para cá os scripts de IA/Ataque específicos de cada boss (ex: BossET)")]
     public MonoBehaviour[] componentsToDisable;
@@ -22,7 +25,7 @@ public class BossHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isDead || currentHealth <= 0) return;
+        if (isDead || currentHealth <= 0 || !podeTomarDano) return;
 
         currentHealth -= damage;
         Debug.Log($"{gameObject.name} tomou {damage} de dano! Vida restante: {currentHealth}");
