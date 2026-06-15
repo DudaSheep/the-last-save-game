@@ -13,8 +13,7 @@ public class GameController : MonoBehaviour
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
-    //vida
-    public static int lives = 1;
+    public static int lives = 1; 
     public TextMeshProUGUI livesText;
 
     //sons
@@ -27,12 +26,11 @@ public class GameController : MonoBehaviour
     public GameObject gameOver;
     public GameObject victoryScreen;
 
-    [Header("UI de Corações (Canvas)")]
-    public Image[] imagensCoracoes; 
-    public Sprite coracaoInteiro;  
-    public Sprite coracaoQuebrado; 
+    [Header("UI da Barra de Vida (Canvas)")]
+    public Image imagemBarraDeVida;   
+    public Sprite[] framesBarraDeVida; 
 
-    //pause
+    // pause
     [SerializeField] private GameObject pauseMenu;
     private bool isPaused;
 
@@ -87,7 +85,6 @@ public class GameController : MonoBehaviour
             scoreText.text = totalScore.ToString();
         }
     }
-
 
     public void UpdateLivesText()
     {
@@ -211,20 +208,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void AtualizarCoracoesUI(int vidaAtualDoPlayer)
+    public void AtualizarBarraDeVidaUI(int vidaAtualDoPlayer)
     {
-        for (int i = 0; i < imagensCoracoes.Length; i++)
+        if (imagemBarraDeVida != null && framesBarraDeVida != null && framesBarraDeVida.Length > 0)
         {
-            if (imagensCoracoes[i] == null) continue;
-
-            if (i < vidaAtualDoPlayer)
-            {
-                imagensCoracoes[i].sprite = coracaoInteiro;
-            }
-            else
-            {
-                imagensCoracoes[i].sprite = coracaoQuebrado;
-            }
+            int indexSeguro = Mathf.Clamp(vidaAtualDoPlayer, 0, framesBarraDeVida.Length - 1);
+            imagemBarraDeVida.sprite = framesBarraDeVida[indexSeguro];
         }
     }
 }

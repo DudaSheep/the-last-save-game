@@ -57,6 +57,8 @@ public class ConnectionTowerScript : MonoBehaviour
 
     void Update()
     {
+        if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive) return;
+
         // Se o laser estiver ativo, ele segue a posição da torre atual até o chefe
         if (shieldLaser != null && bossTransform != null && shieldLaser.enabled)
         {
@@ -84,6 +86,12 @@ public class ConnectionTowerScript : MonoBehaviour
     private IEnumerator ShockAttackRoutine()
     {
         isAttacking = true;
+
+        if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
+        {
+            isAttacking = false;
+            yield break;
+        }
 
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         Color originalColor = Color.white;

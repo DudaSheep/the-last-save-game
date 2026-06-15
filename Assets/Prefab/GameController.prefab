@@ -57,12 +57,14 @@ MonoBehaviour:
   enemyDeathSound: {fileID: 8300000, guid: bd6317c97bbc6414db94f9d007337fe7, type: 3}
   gameOver: {fileID: 0}
   victoryScreen: {fileID: 0}
-  imagensCoracoes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  coracaoInteiro: {fileID: 0}
-  coracaoQuebrado: {fileID: 0}
+  imagemBarraDeVida: {fileID: 0}
+  framesBarraDeVida:
+  - {fileID: -1109623881, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
+  - {fileID: 1115898949, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
+  - {fileID: -412217349, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
+  - {fileID: 1416425363, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
+  - {fileID: 818014574, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
+  - {fileID: -14610239, guid: f7d9c907c094d48889440a8c9995b574, type: 3}
   pauseMenu: {fileID: 0}
 --- !u!82 &3135561027379015379
 AudioSource:
