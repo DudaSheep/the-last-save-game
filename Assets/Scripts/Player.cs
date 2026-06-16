@@ -51,6 +51,11 @@ public class Player : MonoBehaviour
         //se tiver executando o dash, trava as ações normais
         if (isDashing) return;
 
+        if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
+        {
+            return; 
+        }
+
         Move();
         Jump();
         CheckAttack();
@@ -157,6 +162,12 @@ public class Player : MonoBehaviour
             {
                 fbiAgent.TakeDamage(); 
             }
+
+            BossHealth bossHealth = obj.GetComponent<BossHealth>();
+            if (bossHealth != null)
+            {
+                bossHealth.TakeDamage(1); 
+            }
         }
     }
 
@@ -174,7 +185,7 @@ public class Player : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
-
+        
         // Salva a gravidade original e congela o movimento vertical
         float originalGravity = rig.gravityScale;
         rig.gravityScale = 0f;
@@ -185,30 +196,24 @@ public class Player : MonoBehaviour
         // Aplica velocidade do dash
         rig.velocity = new Vector2(direcaoDash * dashForce, 0f);
 
-        // ATIVA INVISIBILIDADE VISUAL
         if (spriteRenderer != null) spriteRenderer.enabled = false; 
 
-        // NOVO: Diz para a física ignorar colisões entre a Layer do Player e a Layer do Inimigo
-        // (Substitua "Player" e "Inimigo" pelos nomes exatos das camadas que você criou)
         int layerPlayer = LayerMask.NameToLayer("Player");
         int layerInimigo = LayerMask.NameToLayer("Interactable");
         Physics2D.IgnoreLayerCollision(layerPlayer, layerInimigo, true);
 
-        // Espera o tempo de duração do dash
         yield return new WaitForSeconds(dashDuration);
 
         // DESLIGA O DASH E RETORNA AO NORMAL
         rig.velocity = Vector2.zero;
         rig.gravityScale = originalGravity; 
         
-        if (spriteRenderer != null) spriteRenderer.enabled = true;  // Reaparece o visual
+        if (spriteRenderer != null) spriteRenderer.enabled = true;  
 
-        // NOVO: Reativa as colisões normais com os inimigos após o fim do dash
         Physics2D.IgnoreLayerCollision(layerPlayer, layerInimigo, false);
 
         isDashing = false;
 
-        // Tempo de espera do Cooldown
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }

@@ -4,42 +4,120 @@ using UnityEngine;
 
 public class PinguinAttackScript : MonoBehaviour
 {
-    [Header("Recursos de Teste")]
-    [Tooltip("Marque esta caixa no modo Play para simular a queda do Chefe e ativar a chuva de estacas!")]
-    public bool simulateLandTrigger = false;
+    [Header("Configurações Gerais de Ataque")]
+    [Tooltip("Duração da chuva de estacas (spikes) em segundos após o pinguim cair no chão")]
+    public float spikeAttackDuration = 6f;
 
-    [Header("Configurações de Ataque")]
-    [Tooltip("Duração da chuva de estacas (spikes) em segundos")]
-    public float spikeAttackDuration = 10f;
-
-    [Header("Fase 1: Torres de Escudo")]
-    [Tooltip("Número total de torres de conexão que protegem o Chefe")]
-    public int totalTowersCount = 1; // Ajustado para 1 conforme sua decisão de escopo!
+    [Header("Fase 1: Estátua (Invulnerável)")]
+    [Tooltip("Número total de torres que precisam ser destruídas")]
+    public int totalTowersCount = 3; 
     private int destroyedTowersCount = 0;
+    
+    [Tooltip("Tempo mínimo para tentar um pulo na Fase 1")]
+    public float phase1MinJumpInterval = 4f;
+    [Tooltip("Tempo máximo para tentar um pulo na Fase 1")]
+    public float phase1MaxJumpInterval = 8f;
+    [Tooltip("Força do pulo na Fase 1")]
+    public float phase1JumpForce = 12f;
+
+    [Header("Fase 2: Colorido (Vulnerável)")]
+    
+    [Tooltip("Prefab do objeto com o script GroundShock que vai aparecer no impacto")]
+    public GameObject shockwavePrefab;
+    
+    [Tooltip("Arraste aqui o objeto vazio (Spawn Point) que fica no pé do pinguim")]
+    public Transform shockwaveSpawnPoint; 
+    
+    [Tooltip("Tempo mínimo para tentar um pulo na Fase 2")]
+    public float phase2MinJumpInterval = 2f;
+    
+    [Tooltip("Tempo máximo para tentar um pulo na Fase 2")]
+    public float phase2MaxJumpInterval = 5f;
+    
+    [Tooltip("Força do pulo na Fase 2")]
+    public float phase2JumpForce = 10f;
+
     private bool isVulnerable = false;
+    private bool isMidJumpAttack = false;
 
     private Rigidbody2D rb;
+    private BossHealth healthScript;
+    private Animator anim;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        healthScript = GetComponent<BossHealth>(); 
+
+        // Configuração Inicial - Fase 1 (Invulnerável)
+        if (healthScript != null)
+        {
+            healthScript.podeTomarDano = false; 
+            Debug.Log("🛡️ Boss Pinguim iniciou como estátua (invulnerável).");
+        }
+
+        if (anim != null)
+        {
+            anim.SetBool("podeTomarDano", false); 
+        }
+
+        if (rb != null) rb.bodyType = RigidbodyType2D.Dynamic;
+
+        StartCoroutine(Phase1JumpAttackRoutine());
     }
 
-    void Update()
+    IEnumerator Phase1JumpAttackRoutine()
     {
-        // SIMULAÇÃO MANUAL PARA TESTAR A CHUVA DE SPIKES
-        if (simulateLandTrigger)
+        while (!isVulnerable)
         {
-            TriggerSpikeAttack();
-            simulateLandTrigger = false; // Desmarca automaticamente
+            // Trava de Cutscene
+            if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
+            {
+                yield return null;
+                continue;
+            }
+
+            float randomWait = Random.Range(phase1MinJumpInterval, phase1MaxJumpInterval);
+            yield return new WaitForSeconds(randomWait);
+
+            if (!isVulnerable && !isMidJumpAttack)
+            {
+                Debug.Log("🎲 Boss Pinguim (Fase 1): Pulo para gerar estacas!");
+                isMidJumpAttack = true;
+
+                if (rb != null)
+                {
+                    rb.velocity = new Vector2(0, phase1JumpForce);
+                }
+            }
         }
     }
 
-    // --- FUNÇÃO CHAMADA PELAS TORRES QUANDO ELAS SÃO DESTRUÍDAS ---
+    IEnumerator Phase2JumpAttackRoutine()
+    {
+        while (isVulnerable)
+        {
+            float randomWait = Random.Range(phase2MinJumpInterval, phase2MaxJumpInterval);
+            yield return new WaitForSeconds(randomWait);
+
+            if (isVulnerable && !isMidJumpAttack)
+            {
+                Debug.Log("🎲 Boss Pinguim (Fase 2): Pulo agressivo!");
+                isMidJumpAttack = true;
+
+                if (rb != null)
+                {
+                    rb.velocity = new Vector2(0, phase2JumpForce);
+                }
+            }
+        }
+    }
+
     public void ReportTowerDestroyed()
     {
         destroyedTowersCount++;
-        Debug.Log("Destruição de torre reportada ao Chefe! Progresso: " + destroyedTowersCount + "/" + totalTowersCount);
+        Debug.Log($"Torre destruída! Ondas concluídas: {destroyedTowersCount}/{totalTowersCount}");
 
         if (destroyedTowersCount >= totalTowersCount)
         {
@@ -50,47 +128,71 @@ public class PinguinAttackScript : MonoBehaviour
     private void SetBossVulnerable()
     {
         isVulnerable = true;
-        Debug.Log("⚡ O CHEFE PINGUIM AGORA ESTÁ VULNERÁVEL! ⚡");
+        isMidJumpAttack = false;
+        
+        // Corta a rotina da Fase 1
+        StopAllCoroutines(); 
 
-        // --- AÇÃO DA FASE 2: FAZER O CHEFE CAIR DA PLATAFORMA ---
-        if (rb != null)
+        Debug.Log("⚡ TODAS AS TORRES CAÍRAM! PINGUIM AGORA ESTÁ VULNERÁVEL... ⚡");
+
+        if (healthScript != null)
         {
-            // Altera o Rigidbody para Dynamic para que a gravidade puxe o Triângulo para o chão naturalmente
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            Debug.Log("Rigidbody do Chefe agora é Dynamic! Caindo para o chão da arena...");
+            healthScript.podeTomarDano = true;
         }
+
+        if (anim != null)
+        {
+            anim.SetBool("podeTomarDano", true); 
+        }
+
+        // Inicia a rotina de ataques agressivos da Fase 2
+        StartCoroutine(Phase2JumpAttackRoutine());
     }
 
-    // GATILHO DE COLISÃO REAL (Quando o chefe atinge o chão)
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Verifica se o objeto colidido é o chão principal da arena
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.name.Contains("Tilemap"))
+        // Detecta quando o pinguim volta para o chão após um pulo (Fase 1 ou Fase 2)
+        if (isMidJumpAttack)
         {
-            // O chefe só causa o terremoto de estacas se cair no chão
-            TriggerSpikeAttack();
+            if (collision.gameObject.name.Contains("Tilemap") || collision.gameObject.CompareTag("Ground"))
+            {
+                isMidJumpAttack = false;
+                
+                if (!isVulnerable)
+                {
+                    Debug.Log("💥 Impacto no chão (Fase 1)! Ativando apenas estacas.");
+                    TriggerSpikeAttack();
+                }
+                else
+                {
+                    Debug.Log("💥 Impacto no chão (Fase 2)! Estacas + Onda de Choque.");
+                    TriggerSpikeAttack();
+                    TriggerShockwave();
+                }
+            }
         }
     }
 
-    // CONECTA COM O SPIKE SPAWNER DO TETO
     private void TriggerSpikeAttack()
     {
         SpikeSpawner spawner = FindObjectOfType<SpikeSpawner>();
-
         if (spawner != null)
         {
-            Debug.Log("Chefe bateu no chão! Ativando chuva de spikes por " + spikeAttackDuration + " segundos.");
             spawner.AtivarChuvaDeSpikes(spikeAttackDuration);
-        }
-        else
-        {
-            Debug.LogWarning("SpikeSpawner não foi encontrado na cena! Certifique-se de que o script está anexado a um objeto.");
         }
     }
 
-    // Getter publico para checar se o jogador pode causar dano ao chefe
-    public bool IsVulnerable()
+    private void TriggerShockwave()
     {
-        return isVulnerable;
+        if (shockwavePrefab != null)
+        {
+            Vector3 spawnPosition = shockwaveSpawnPoint != null ? shockwaveSpawnPoint.position : transform.position;
+            
+            Instantiate(shockwavePrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("O prefab da Onda de Choque não foi atribuído no Inspector!");
+        }
     }
 }

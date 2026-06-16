@@ -1,70 +1,90 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     //mainmenu e play
-    [SerializeField] private string level1SceneName = "lvl1";
+    [SerializeField] private string level1SceneName = "Stage1_et";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
-    
+
     //score
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
-    //vida
     public static int lives = 1; 
     public TextMeshProUGUI livesText;
 
     //sons
     public AudioSource bgMusic;
+    public AudioSource sfxSource;
     public AudioClip playerHitSound;
     public AudioClip enemyDeathSound;
 
     //gameover e victory
     public GameObject gameOver;
-    public GameObject victoryScreen; 
+    public GameObject victoryScreen;
 
-    //pause
+    [Header("UI da Barra de Vida (Canvas)")]
+    public Image imagemBarraDeVida;   
+    public Sprite[] framesBarraDeVida; 
+
+    // pause
     [SerializeField] private GameObject pauseMenu;
     private bool isPaused;
 
     public static GameController instance;
 
-    void Awake() 
+    void Awake()
     {
-        instance = this;
+        //singleton simples
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
-        UpdateScoreText();
-        UpdateLivesText();
+        if (SceneManager.GetActiveScene().name != "Cutscene_Intro")
+        {
+            UpdateScoreText();
+            UpdateLivesText();
+        }
+
+        if (bgMusic != null && !bgMusic.isPlaying)
+        {
+            bgMusic.Play();
+        }
     }
 
     void Update()
     {
-    if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
-    {
-        if (isPaused)
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            Resume();
+            if (isPaused)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
         }
-        else
-        {
-            Pause();
-        }
-    }
     }
 
     public void UpdateScoreText()
     {
-        if (scoreText != null) 
+        if (scoreText != null)
         {
             scoreText.text = totalScore.ToString();
         }
     }
-
 
     public void UpdateLivesText()
     {
@@ -76,7 +96,8 @@ public class GameController : MonoBehaviour
 
     public void LoseLife()
     {
-        PlayEffect(playerHitSound);
+        if (lives < 0 && Time.timeScale == 1f && SceneManager.GetActiveScene().name == "GameOver") return;
+
         lives--;
         UpdateLivesText();
 
@@ -84,7 +105,15 @@ public class GameController : MonoBehaviour
         {
             lives = 0;
             UpdateLivesText();
-            ShowGameOver();
+
+            if (bgMusic != null)
+            {
+                bgMusic.Stop();
+            }
+
+            CancelInvoke("RestartLevel");
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("GameOver");
         }
         else
         {
@@ -98,31 +127,50 @@ public class GameController : MonoBehaviour
         UpdateLivesText();
     }
 
-
     public void Pause()
     {
-        pauseMenu.SetActive(true);
-        Time.timeScale = 0f; 
+        if (pauseMenu != null) 
+        {
+            pauseMenu.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
         isPaused = true;
+
+        if (bgMusic != null)
+        {
+            bgMusic.Pause();
+        }
     }
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
-        Time.timeScale = 1f; 
+        if (pauseMenu != null) 
+        {
+            pauseMenu.SetActive(false);
+        }
+
+        Time.timeScale = 1f;
         isPaused = false;
+
+        if (bgMusic != null)
+        {
+            bgMusic.UnPause();
+        }
     }
 
     public void ShowGameOver()
     {
         gameOver.SetActive(true);
         Time.timeScale = 0f;
+        if (bgMusic != null) bgMusic.Stop();
     }
 
     public void ShowVictoryScreen()
     {
         victoryScreen.SetActive(true);
         Time.timeScale = 0f;
+        if (bgMusic != null) bgMusic.Stop(); 
     }
 
     public void RestartLevel()
@@ -133,8 +181,8 @@ public class GameController : MonoBehaviour
 
     public void PlayAgainFromStart()
     {
-        totalScore = 0; 
-        lives = 1;      
+        totalScore = 0;
+        lives = 1;
         Time.timeScale = 1f;
         SceneManager.LoadScene(level1SceneName);
     }
@@ -157,6 +205,15 @@ public class GameController : MonoBehaviour
         if (clip != null && bgMusic != null)
         {
             bgMusic.PlayOneShot(clip);
+        }
+    }
+
+    public void AtualizarBarraDeVidaUI(int vidaAtualDoPlayer)
+    {
+        if (imagemBarraDeVida != null && framesBarraDeVida != null && framesBarraDeVida.Length > 0)
+        {
+            int indexSeguro = Mathf.Clamp(vidaAtualDoPlayer, 0, framesBarraDeVida.Length - 1);
+            imagemBarraDeVida.sprite = framesBarraDeVida[indexSeguro];
         }
     }
 }

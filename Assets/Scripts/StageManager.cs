@@ -1,49 +1,39 @@
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("Configurações da Fase")]
-    public int agentsToDefeat = 10;
-    private int currentDefeated = 0;
-
-    public GameObject fbiSpawner;  
+    [Header("Estado do Jogo")]
     public bool isCutsceneActive = true;
+
+    [Header("Referência da Cutscene")]
+    public PlayableDirector timelineDirector; 
 
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        isCutsceneActive = true; 
     }
 
-    void Start()
+    void Update()
     {
-        Invoke("StartFBIWave", 3f);
-    }
-
-    public void StartFBIWave()
-    {
-        isCutsceneActive = false;
-        if (fbiSpawner != null) fbiSpawner.SetActive(true);
-        Debug.Log("Começou a onda do FBI.");
-    }
-
-    public void AgentDefeated()
-    {
-        currentDefeated++;
-        Debug.Log($"Agentes derrotados: {currentDefeated}/{agentsToDefeat}");
-
-        if (currentDefeated >= agentsToDefeat)
+        if (isCutsceneActive && timelineDirector != null)
         {
-            EndFBIWave();
+            if (timelineDirector.time >= (timelineDirector.duration - 0.1))
+            {
+                isCutsceneActive = false;
+                Debug.Log("A cutscene acabou pelo relógio! O jogador já pode se mover.");
+            }
+            
+            else if (!timelineDirector.gameObject.activeInHierarchy && timelineDirector.time > 1f)
+            {
+                isCutsceneActive = false;
+                Debug.Log("A Timeline foi desativada! O jogador já pode se mover.");
+            }
         }
-    }
-
-    void EndFBIWave()
-    {
-        if (fbiSpawner != null) fbiSpawner.SetActive(false);
-        Debug.Log("Onda do FBI limpa!");
-    
     }
 }

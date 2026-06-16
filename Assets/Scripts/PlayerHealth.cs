@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Configurações de Vida")]
-    public int maxHealth = 3;
+    public int maxHealth = 5;
     public int currentHealth;
 
     [Header("Feedback de Dano")]
@@ -18,6 +18,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Pega o sprite da DonaMorte
+
+        if (GameController.instance != null)
+        {
+            GameController.instance.AtualizarBarraDeVidaUI(currentHealth);
+        }
     }
 
     public void TakeDamage(int damage)
@@ -26,7 +31,17 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible || currentHealth <= 0) return;
 
         currentHealth -= damage;
-        Debug.Log("❤️ Dona Morte levou dano! Corações restantes: " + currentHealth);
+        Debug.Log("❤️ Dona Morte levou dano! Vida restante: " + currentHealth);
+
+        if (GameController.instance != null)
+        {
+            GameController.instance.AtualizarBarraDeVidaUI(currentHealth);
+        }
+
+        if (GameController.instance != null && GameController.instance.playerHitSound != null)
+        {
+            GameController.instance.PlayEffect(GameController.instance.playerHitSound);
+        }
 
         if (currentHealth <= 0)
         {
@@ -73,6 +88,11 @@ public class PlayerHealth : MonoBehaviour
         // {
         //     anim.SetTrigger("death"); // Ajuste o nome se sua animação for diferente
         // }
+
+        if (GameController.instance != null)
+        {
+            GameController.instance.Invoke("LoseLife", 0.5f);
+        }
 
         Destroy(gameObject, 1.5f);
     }

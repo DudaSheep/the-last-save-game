@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ce87572d23ed14ab839ac987a1d143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 3
+  maxHealth: 5
   currentHealth: 0
   flashDuration: 0.15
   invincibilityDuration: 1
@@ -141,7 +141,7 @@ MonoBehaviour:
   attackRange: 0.5
   attackableLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 4224
   dashForce: 15
   dashDuration: 0.2
   dashCooldown: 1
@@ -222,7 +222,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!95 &4985220860851641689
 Animator:
