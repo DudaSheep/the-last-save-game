@@ -25,7 +25,6 @@ public class BossHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        // Se estiver morto ou no tempo de respiro da transição de fase, ignora o dano completamente
         if (isDead || currentHealth <= 0 || !podeTomarDano) return;
 
         currentHealth -= damage;
@@ -56,6 +55,11 @@ public class BossHealth : MonoBehaviour
         isDead = true;
         Debug.Log($"{gameObject.name} foi completamente derrotado!");
 
+        // ==========================================
+        // LIBERA O PULO DUPLO DO JOGADOR AQUI!
+        // ==========================================
+        Player.AtivarPuloDuplo();
+
         if (GameController.instance != null && GameController.instance.enemyDeathSound != null)
         {
             GameController.instance.PlayEffect(GameController.instance.enemyDeathSound);
@@ -75,8 +79,6 @@ public class BossHealth : MonoBehaviour
         Destroy(gameObject, 1.5f);
     }
 
-
-    // funcao do pra chamar o drop do item (boss)
     void ExecutarDropEfeito()
     {
         LootDropper dropper = GetComponent<LootDropper>();
@@ -86,7 +88,7 @@ public class BossHealth : MonoBehaviour
         }
         else
         {
-            CarregarProximaFase(); // caso nao ache o objeto passa pra main menu
+            CarregarProximaFase(); 
         }
     }
 

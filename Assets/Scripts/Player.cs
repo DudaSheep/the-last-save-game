@@ -8,11 +8,15 @@ public class Player : MonoBehaviour
     public bool isJumping;
     public bool doubleJump;
 
+    [Header("Progressão de Habilidades")]
+    [Tooltip("Controla se o jogador já pode dar o pulo duplo")]
+    public static bool liberouPuloDuplo = false; // Começa bloqueado. Fica como 'static' para persistir ou ser acessado facilmente.
+
     [Header("Configuração Especial: Club Penguin")]
     public bool estaNoGelo = false;
     [Tooltip("Quanto menor o valor, mais ela desliza (Ex: 1.5f desliza bastante, 5f para rápido)")]
     public float deslizamentoGelo = 2f;
-    private float velocidadeHorizontalAtual = 0f; // Controla a inercia do movimento
+    private float velocidadeHorizontalAtual = 0f;
 
     [Header("Configurações de Ataque")]
     public Transform attackPoint;
@@ -36,7 +40,6 @@ public class Player : MonoBehaviour
     private SpriteRenderer spriteRenderer; 
     private Collider2D playerCollider;    
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
@@ -45,10 +48,8 @@ public class Player : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();     
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //se tiver executando o dash, trava as ações normais
         if (isDashing) return;
 
         if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
@@ -66,7 +67,6 @@ public class Player : MonoBehaviour
     {
         float inputHorizontal = Input.GetAxis("Horizontal");
 
-        // --- SISTEMA DE MOVIMENTO COM INÉRCIA (GELO VS NORMAL) ---
         if (estaNoGelo)
         {
             if (inputHorizontal != 0)
@@ -85,7 +85,6 @@ public class Player : MonoBehaviour
 
         Vector3 movement = new Vector3(velocidadeHorizontalAtual, 0f, 0f);
         transform.position += movement * Time.deltaTime * Speed;
-
 
         if (inputHorizontal > 0)
         {
@@ -110,18 +109,20 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump"))
         {
+            // PULO SIMPLES: Funciona normalmente se o jogador estiver no chão
             if (!isJumping)
             {
                 rig.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
                 doubleJump = true;
                 anim.SetBool("jump", true);
             }
+            // TENTATIVA DE PULO DUPLO: Só entra aqui se já estiver no ar
             else
             {
-                if (doubleJump)
+                // ADICIONADO: Só executa se 'doubleJump' for true E se a habilidade já foi liberada
+                if (doubleJump && liberouPuloDuplo)
                 {
                     rig.velocity = new Vector2(rig.velocity.x, 0f);
-
                     rig.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
                     doubleJump = false;
                     anim.SetTrigger("jump");
@@ -171,7 +172,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // --- VERIFICA SE O JOGADOR APERTOU A TECLA J ---
     void CheckDash()
     {
         if (Input.GetKeyDown(KeyCode.J) && canDash)
@@ -180,20 +180,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    // --- DASH FANTASMÁTICO ---
     IEnumerator DashRoutine()
     {
         canDash = false;
         isDashing = true;
         
-        // Salva a gravidade original e congela o movimento vertical
         float originalGravity = rig.gravityScale;
         rig.gravityScale = 0f;
 
-        // Descobre a direção baseada na rotação atual
         float direcaoDash = (transform.eulerAngles.y == 180f) ? -1f : 1f;
         
-        // Aplica velocidade do dash
         rig.velocity = new Vector2(direcaoDash * dashForce, 0f);
 
         if (spriteRenderer != null) spriteRenderer.enabled = false; 
@@ -204,7 +200,6 @@ public class Player : MonoBehaviour
 
         yield return new WaitForSeconds(dashDuration);
 
-        // DESLIGA O DASH E RETORNA AO NORMAL
         rig.velocity = Vector2.zero;
         rig.gravityScale = originalGravity; 
         
@@ -233,5 +228,12 @@ public class Player : MonoBehaviour
         {
             isJumping = true;
         }
+    }
+
+    // --- FUNÇÃO PARA LIBERAR O PULO DUPLO ---
+    // Chame isso a partir do script de morte do ET/Boss
+    public static void AtivarPuloDuplo()
+    {
+        liberouPuloDuplo = true;
     }
 }
