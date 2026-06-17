@@ -25,6 +25,10 @@ public class Player : MonoBehaviour
     [Tooltip("Selecione a Layer que você criou para a torre (ex: Interactable)")]
     public LayerMask attackableLayers;
 
+    [Tooltip("Tempo em segundos entre um ataque e outro (ajuste para o tempo da sua animação)")]
+    public float attackCooldown = 0.5f; 
+    private float nextAttackTime = 0f;
+
     [Header("Configurações do Dash (Botão J)")]
     [Tooltip("A distância/força do avanço rápido")]
     public float dashForce = 15f;
@@ -133,9 +137,11 @@ public class Player : MonoBehaviour
 
     void CheckAttack()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+       
+        if (Input.GetKeyDown(KeyCode.K) && Time.time >= nextAttackTime)
         {
             Attack();
+            nextAttackTime = Time.time + attackCooldown; 
         }
     }
 
