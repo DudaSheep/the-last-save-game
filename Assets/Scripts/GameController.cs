@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
     public static int totalScore;
     public TextMeshProUGUI scoreText;
 
-    public static int lives = 1; 
+    public static int lives = 1;
     public TextMeshProUGUI livesText;
 
     //sons
@@ -27,8 +27,8 @@ public class GameController : MonoBehaviour
     public GameObject victoryScreen;
 
     [Header("UI da Barra de Vida (Canvas)")]
-    public Image imagemBarraDeVida;   
-    public Sprite[] framesBarraDeVida; 
+    public Image imagemBarraDeVida;
+    public Sprite[] framesBarraDeVida;
 
     // pause
     [SerializeField] private GameObject pauseMenu;
@@ -129,7 +129,7 @@ public class GameController : MonoBehaviour
 
     public void Pause()
     {
-        if (pauseMenu != null) 
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(true);
         }
@@ -145,7 +145,7 @@ public class GameController : MonoBehaviour
 
     public void Resume()
     {
-        if (pauseMenu != null) 
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
@@ -170,7 +170,7 @@ public class GameController : MonoBehaviour
     {
         victoryScreen.SetActive(true);
         Time.timeScale = 0f;
-        if (bgMusic != null) bgMusic.Stop(); 
+        if (bgMusic != null) bgMusic.Stop();
     }
 
     public void RestartLevel()
@@ -189,6 +189,13 @@ public class GameController : MonoBehaviour
 
     public void PlayGame()
     {
+        // limpa checkpoint boss
+        if (PlayerPrefs.HasKey("BossCheckpoint"))
+        {
+            PlayerPrefs.DeleteKey("BossCheckpoint");
+            PlayerPrefs.Save();
+        }
+
         totalScore = 0;
         lives = 1;
         SceneManager.LoadScene(level1SceneName);

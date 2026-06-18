@@ -366,4 +366,9 @@ public class AmalgamadoBoss : MonoBehaviour
             Gizmos.DrawWireSphere(hitPointFoice.position, raioAtaqueFoice);
         }
     }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
 }

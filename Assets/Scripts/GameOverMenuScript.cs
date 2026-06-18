@@ -16,14 +16,20 @@ public class GameOverMenuScript : MonoBehaviour
         if (PlayerPrefs.HasKey("BossCheckpoint"))
         {
             int bossSceneIndex = PlayerPrefs.GetInt("BossCheckpoint");
-            GameController.lives = 3;
+            GameController.lives = 1;
 
             SceneManager.LoadScene(bossSceneIndex);
         }
         else
         {
+            if (PlayerPrefs.HasKey("BossCheckpoint"))
+            {
+                PlayerPrefs.DeleteKey("BossCheckpoint");
+                PlayerPrefs.Save();
+            }
+
             GameController.totalScore = 0;
-            GameController.lives = 3;
+            GameController.lives = 1;
 
             SceneManager.LoadScene(level1SceneName);
         }
