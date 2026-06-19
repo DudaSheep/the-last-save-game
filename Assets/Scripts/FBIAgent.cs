@@ -21,7 +21,10 @@ public class FBIAgent : MonoBehaviour
     public int maxShots = 3;         
     public float reloadTime = 2f;
     
-    private Transform player;
+    [Header("Referência do Player")]
+    [Tooltip("Arraste a Dona Morte (Player) da hierarquia da cena direto para cá!")]
+    public Transform player; 
+
     private int shotsFired = 0;
     private bool isReloading = false;
     private bool isDead = false;
@@ -38,36 +41,46 @@ public class FBIAgent : MonoBehaviour
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null) player = playerObj.transform;
-
         pontoDestinoAtual = pontoA;
 
-        // Calcula exatamente onde a zona começa e termina no mapa baseada nos pontos A e B
+        AtualizarLimitesDaZona();
+
+        // Iniciamos a Coroutine, mas ela mesma vai gerenciar a espera
+        StartCoroutine(AttackRoutine());
+    }
+
+    // Calcula os limites exatos garantindo que a matemática não quebre se os pontos se moverem
+    void AtualizarLimitesDaZona()
+    {
         if (pontoA != null && pontoB != null)
         {
             limiteEsquerdo = Mathf.Min(pontoA.position.x, pontoB.position.x);
             limiteDireito = Mathf.Max(pontoA.position.x, pontoB.position.x);
         }
-
-        StartCoroutine(AttackRoutine());
     }
 
     void Update()
     {
         if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive) return;
-
         if (isDead) return;
 
-        float distanceToPlayer = player != null ? Vector2.Distance(transform.position, player.position) : Mathf.Infinity;
-
-        bool playerDentroDaZona = false;
-        if (player != null)
+        // SE O PLAYER NÃO ESTIVER ARRASTADO NO INSPETOR, ELE APENAS PATRULHA SEM GERAR ERROS
+        if (player == null)
         {
-            playerDentroDaZona = (player.position.x >= limiteEsquerdo && player.position.x <= limiteDireito);
+            ModoPatrulha();
+            return; 
         }
 
-        // Só entra em combate se a Dona Morte estiver perto E dentro da zona dele
+        AtualizarLimitesDaZona();
+
+        // IGNORA O EIXO Z PARA CALCULAR A DISTÂNCIA (Garante que é puramente 2D)
+        Vector2 fbiPos2D = new Vector2(transform.position.x, transform.position.y);
+        Vector2 playerPos2D = new Vector2(player.position.x, player.position.y);
+        float distanceToPlayer = Vector2.Distance(fbiPos2D, playerPos2D);
+
+        // CALCULA A ZONA COM UMA "FOLGA" DE 0.5f (Margem de tolerância)
+        bool playerDentroDaZona = (player.position.x >= (limiteEsquerdo - 0.5f) && player.position.x <= (limiteDireito + 0.5f));
+
         if (distanceToPlayer <= aggroDistance && playerDentroDaZona)
         {
             ModoCombate(distanceToPlayer);
@@ -100,7 +113,7 @@ public class FBIAgent : MonoBehaviour
         float direction = Mathf.Sign(player.position.x - transform.position.x);
         AjustarDirecaoSprite(direction);
 
-        // Trava para o agente não sair correndo do mapa atrás dela
+        // Trava para o agente não sair correndo do mapa atrás dela usando os limites atualizados
         bool fbiPodeAndar = (transform.position.x > limiteEsquerdo && transform.position.x < limiteDireito) || 
                             (transform.position.x <= limiteEsquerdo && direction > 0) || 
                             (transform.position.x >= limiteDireito && direction < 0);
@@ -130,20 +143,25 @@ public class FBIAgent : MonoBehaviour
 
     IEnumerator AttackRoutine()
     {
+        // Garante que o jogo já começou de fato e saiu de telas de loading
+        yield return new WaitForEndOfFrame(); 
+
+        // Loop principal do combate
         while (!isDead)
         {
-            if (StageManager.Instance != null && StageManager.Instance.isCutsceneActive)
+            // Se não tem player arrastado no inspetor, ou se está em cutscene, apenas espera
+            if (player == null || StageManager.Instance == null || StageManager.Instance.isCutsceneActive)
             {
                 yield return null; 
                 continue; 
             }
+            
+            // Distância puramente 2D também na rotina de ataque
+            Vector2 fbiPos2D = new Vector2(transform.position.x, transform.position.y);
+            Vector2 playerPos2D = new Vector2(player.position.x, player.position.y);
+            float distanceToPlayer = Vector2.Distance(fbiPos2D, playerPos2D);
 
-            if (player == null) yield break;
-            
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-            
-            // Checa a zona de novo para garantir que ele não atire se ela sair da área
-            bool playerDentroDaZona = (player.position.x >= limiteEsquerdo && player.position.x <= limiteDireito);
+            bool playerDentroDaZona = (player.position.x >= (limiteEsquerdo - 0.5f) && player.position.x <= (limiteDireito + 0.5f));
 
             if (distanceToPlayer <= aggroDistance && playerDentroDaZona)
             {
@@ -207,7 +225,6 @@ public class FBIAgent : MonoBehaviour
         if (isDead) return;
         
         isDead = true;
-
         Destroy(gameObject); 
     }
 

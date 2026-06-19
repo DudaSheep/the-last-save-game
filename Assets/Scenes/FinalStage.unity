@@ -390,6 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPhase: 0
+  playerTransform: {fileID: 1623221297}
   attackCooldown: 3.5
   tempoInvuneravelTransicao: 2.5
   hitPointFoice: {fileID: 1223278702}
@@ -4029,6 +4030,11 @@ Transform:
 --- !u!95 &1623221296 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4985220860851641689, guid: 478de4525140d6344a87883df6fca937, type: 3}
+  m_PrefabInstance: {fileID: 1145939437}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1623221297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 139609208494128285, guid: 478de4525140d6344a87883df6fca937, type: 3}
   m_PrefabInstance: {fileID: 1145939437}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1639979670

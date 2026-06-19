@@ -1621,6 +1621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f87ba9811b64c2cb36c29b08942b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTransform: {fileID: 1214782375005847694}
   dashSpeed: 20
   prepareTime: 3
   tempoDeEsperaNaBase: 15
@@ -2585,7 +2586,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipoDesteItem: 1
-  nomeCenaMenu: MainMenu
 --- !u!61 &1628937774
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2984,6 +2984,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 478de4525140d6344a87883df6fca937, type: 3}
+--- !u!4 &1214782375005847694 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 139609208494128285, guid: 478de4525140d6344a87883df6fca937, type: 3}
+  m_PrefabInstance: {fileID: 1214782375005847693}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

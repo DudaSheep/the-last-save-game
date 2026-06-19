@@ -9,12 +9,15 @@ public class AmalgamadoBoss : MonoBehaviour
     [Header("Estado Atual")]
     public BossPhase currentPhase = BossPhase.Phase1_Foice;
 
+    [Header("Referência do Player")]
+    [Tooltip("Arraste o Player da hierarquia da cena direto para cá!")]
+    public Transform playerTransform;
+
     [Header("Configurações Gerais de Ataque")]
     public float attackCooldown = 3.5f;
     private bool isAttacking = false;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
-    private Transform playerTransform;
 
     private BossHealth bossHealth;
     private float maxHealthOriginal;
@@ -27,7 +30,6 @@ public class AmalgamadoBoss : MonoBehaviour
     [Header("Configurações de Balanceamento")]
     [Tooltip("Duração (em segundos) que o Boss ficará invulnerável ao mudar de fase")]
     public float tempoInvuneravelTransicao = 2.5f;
-
 
     [Header("Fase 1 - Configurações da Foice")]
     [Tooltip("Arraste aqui um GameObject vazio criado dentro do Boss, posicionado onde a foice bate")]
@@ -60,16 +62,16 @@ public class AmalgamadoBoss : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         bossHealth = GetComponent<BossHealth>();
-
+        
+        // Atribuindo apenas uma vez
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             corDefinitivaDoBoss = spriteRenderer.color;
         }
 
-        // Checkpint para Boss
+        // Checkpoint para Boss
         Debug.Log("boss checkpoint!!");
         PlayerPrefs.SetInt("BossCheckpoint", SceneManager.GetActiveScene().buildIndex);
         PlayerPrefs.Save();
@@ -83,8 +85,6 @@ public class AmalgamadoBoss : MonoBehaviour
             Debug.LogError("🚨 ERRO: O objeto precisa ter o script BossHealth adicionado a ele!");
         }
 
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
 
         if (paredeEspinhosEsquerda != null) paredeEspinhosEsquerda.SetActive(false);
         if (spawnerFlappyBird != null) spawnerFlappyBird.SetActive(false);
@@ -233,10 +233,7 @@ public class AmalgamadoBoss : MonoBehaviour
 
     public void DispararDanoDaFoice()
     {
-        if (hitPointFoice == null)
-        {
-            return;
-        }
+        if (hitPointFoice == null) return;
 
         Collider2D playerAtingido = Physics2D.OverlapCircle(hitPointFoice.position, raioAtaqueFoice, layerDoPlayer);
 
@@ -244,23 +241,16 @@ public class AmalgamadoBoss : MonoBehaviour
         {
             PlayerHealth vida = playerAtingido.GetComponent<PlayerHealth>();
 
-            if (vida == null)
-            {
-                vida = playerAtingido.GetComponentInParent<PlayerHealth>();
-            }
-            if (vida == null)
-            {
-                vida = playerAtingido.GetComponentInChildren<PlayerHealth>();
-            }
+            if (vida == null) vida = playerAtingido.GetComponentInParent<PlayerHealth>();
+            if (vida == null) vida = playerAtingido.GetComponentInChildren<PlayerHealth>();
 
-            // Se encontrou o script de vida de qualquer uma das formas
             if (vida != null)
             {
                 vida.TakeDamage(danoFoice);
             }
             else
             {
-                Debug.LogWarning("⚠️ A foice colidiu com " + playerAtingido.name + " na camada Player, mas o script 'PlayerHealth' não foi encontrado em lugar nenhum desse objeto!");
+                Debug.LogWarning("⚠️ A foice colidiu com " + playerAtingido.name + " na camada Player, mas o script 'PlayerHealth' não foi encontrado!");
             }
         }
     }
@@ -273,14 +263,15 @@ public class AmalgamadoBoss : MonoBehaviour
         {
             if (spriteRenderer != null) spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-            if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss; // Usa a cor segura
+            if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss;
             yield return new WaitForSeconds(0.2f);
             timer += 0.4f;
         }
-        if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss; // Garante o reset total
+        if (spriteRenderer != null) spriteRenderer.color = corDefinitivaDoBoss;
 
         if (anim != null) anim.SetTrigger("attack");
 
+        // Agora ele tem certeza que o playerTransform não é nulo (se você arrastar no Inspetor)
         if (playerTransform != null)
         {
             Rigidbody2D playerRb = playerTransform.GetComponent<Rigidbody2D>();
@@ -297,7 +288,6 @@ public class AmalgamadoBoss : MonoBehaviour
         {
             yield return new WaitForSeconds(attackCooldown);
 
-            // Evita disparar os mega ataques caso o boss esteja no meio da transição
             if (isAttacking) continue;
 
             if (spawnerEstacasTeto != null)
@@ -365,10 +355,5 @@ public class AmalgamadoBoss : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(hitPointFoice.position, raioAtaqueFoice);
         }
-    }
-
-    private void OnDisable()
-    {
-        StopAllCoroutines();
     }
 }

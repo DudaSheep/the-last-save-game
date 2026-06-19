@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class FlappyAttackScript : MonoBehaviour
 {
-    private Transform playerTransform;
+    [Header("Referência do Player")]
+    [Tooltip("Arraste a Dona Morte (Player) da hierarquia da cena direto para cá!")]
+    public Transform playerTransform; 
+
     private Rigidbody2D rb;
     private Animator anim;
     private PipeSpawner spawner;
@@ -29,9 +32,6 @@ public class FlappyAttackScript : MonoBehaviour
         posicaoInicial = transform.position;
         escalaOriginal = transform.localScale; 
 
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
-
         spawner = FindObjectOfType<PipeSpawner>();
     }
 
@@ -49,6 +49,13 @@ public class FlappyAttackScript : MonoBehaviour
 
         while (true)
         {
+            // BLINDAGEM: Se você esquecer de arrastar o player no inspetor, ele apenas espera para não dar erro
+            if (playerTransform == null)
+            {
+                yield return new WaitForSeconds(1f);
+                continue;
+            }
+
             // ----------------------------------------------------
             // ETAPA 1: TRAVA OS PIPES E FICA IRRITADO
             // ----------------------------------------------------
@@ -75,11 +82,9 @@ public class FlappyAttackScript : MonoBehaviour
                 anim.SetBool("investindo", true);
             }
 
-            Vector2 posicaoDaMorte = Vector2.zero;
-            if (playerTransform != null)
-            {
-                posicaoDaMorte = playerTransform.position;
-            }
+            // Pega a posição puramente 2D (Ignora o eixo Z para evitar bugs na Build)
+            Vector2 posicaoDaMorte = new Vector2(playerTransform.position.x, playerTransform.position.y);
+            Vector2 posFlappy2D = new Vector2(transform.position.x, transform.position.y);
 
             if (posicaoDaMorte.x > transform.position.x)
             {
@@ -90,7 +95,8 @@ public class FlappyAttackScript : MonoBehaviour
                 transform.localScale = spriteOriginalOlhaEsquerda ? escalaOriginal : new Vector3(-escalaOriginal.x, escalaOriginal.y, escalaOriginal.z);
             }
 
-            Vector2 direcao = (posicaoDaMorte - (Vector2)transform.position).normalized;
+            // Calcula a direção puramente no eixo X e Y
+            Vector2 direcao = (posicaoDaMorte - posFlappy2D).normalized;
             rb.velocity = direcao * dashSpeed;
 
             yield return new WaitForSeconds(0.8f);
